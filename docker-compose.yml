@@ -16,4 +16,11 @@ services:
       - .:/go/src/app
     depends_on:
       - db
+  migrate:
+    image: migrate/migrate
+    command: ["-database", "${DATABASE_URL}", "-path", "/migrations", "up"]
+    volumes:
+      - $PWD/db/migrations:/migrations
+    depends_on:
+      - db
 
