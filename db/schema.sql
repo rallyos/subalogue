@@ -1,6 +1,7 @@
 CREATE TABLE subscriptions (
     id integer NOT NULL,
     name character varying(120) NOT NULL,
+    user_id integer,
     price integer NOT NULL
 );
 
@@ -23,3 +24,5 @@ ALTER TABLE ONLY users
 ALTER TABLE ONLY users
     ADD CONSTRAINT users_username_key UNIQUE (username);
 
+ALTER TABLE ONLY subscriptions
+    ADD CONSTRAINT subscriptions_user_id_fkey FOREIGN KEY (user_id) REFERENCES users(id);

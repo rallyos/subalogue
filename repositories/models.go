@@ -2,12 +2,15 @@
 
 package db
 
-import ()
+import (
+	"database/sql"
+)
 
 type Subscription struct {
-	ID    int32
-	Name  string
-	Price int32
+	ID     int32
+	Name   string
+	UserID sql.NullInt32
+	Price  int32
 }
 
 type User struct {

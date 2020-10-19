@@ -1,18 +1,18 @@
--- name: CreateSubscriptions :one
+-- name: CreateUserSubscriptions :one
 INSERT INTO subscriptions (
-    name, price
+    user_id, name, price
 ) VALUES (
-    $1, $2
+    $1, $2, $3
 )
 RETURNING *;
 
--- name: ListSubscriptions :many
-SELECT * FROM subscriptions;
+-- name: ListUserSubscriptions :many
+SELECT * FROM subscriptions where user_id = $1;
 
--- name: UpdateSubscriptions :exec
+-- name: UpdateUserSubscription :exec
 UPDATE subscriptions
-SET name = $1, price = $2
-WHERE id = $3;
+SET name = $2, price = $3
+WHERE user_id = $1 AND id = $4;
 
--- name: DeleteSubscriptions :exec
-DELETE FROM subscriptions WHERE id = $1;
+-- name: DeleteSubscription :exec
+DELETE FROM subscriptions WHERE user_id = $1 AND id = $2;
