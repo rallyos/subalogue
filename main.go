@@ -7,6 +7,7 @@ import (
 	"github.com/gin-gonic/gin"
 	_ "github.com/lib/pq"
 	"log"
+	"net/http"
 )
 
 func main() {
@@ -16,24 +17,39 @@ func main() {
 		log.Fatal(err)
 	}
 
-	db := db.New(conn)
+	query := db.New(conn)
+	ctx := context.Background()
+	harcoded_user_id := sql.NullInt32{Int32: 1, Valid: true}
 
 	r := gin.Default()
+
+	// Recovery middleware recovers from any panics and writes a 500 if there was one.
+	r.Use(gin.Recovery())
+
 	r.GET("/ping", func(c *gin.Context) {
-		c.JSON(200, gin.H{
-			"message": "pong",
-		})
+		c.String(200, "Ping")
 	})
 
 	r.GET("me/subscriptions", func(c *gin.Context) {
 		// TODO Check if null and flip the Valid key when true
-		harcoded_user_id := sql.NullInt32{Int32: 1, Valid: true}
-		subscriptions, err := db.ListUserSubscriptions(context.Background(), harcoded_user_id)
+		subscriptions, err := query.ListUserSubscriptions(ctx, harcoded_user_id)
 		if err != nil {
 			log.Fatal(err)
 		}
 
 		c.JSON(200, subscriptions)
+	})
+
+	r.POST("me/subscriptions", func(c *gin.Context) {
+		var subscription_json db.CreateUserSubscriptionsParams
+		subscription_json.UserID = harcoded_user_id
+
+		if err := c.ShouldBindJSON(&subscription_json); err != nil {
+			c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		}
+		query.CreateUserSubscriptions(ctx, subscription_json)
+
+		c.Status(http.StatusCreated)
 	})
 
 	r.Run()
