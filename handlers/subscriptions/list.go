@@ -10,7 +10,7 @@ import (
 
 func ListSubscriptionsHandler(w http.ResponseWriter, r *http.Request) {
 	// TODO Check if null and flip the Valid key when true
-	session, err := session.Store.Get(r, "auth-session")
+	session, err := session.Store.Get(r, "subalogue-auth-session")
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return

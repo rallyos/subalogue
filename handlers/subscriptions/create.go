@@ -13,7 +13,7 @@ var ctx = context.Background()
 func CreateSubscriptionHandler(w http.ResponseWriter, r *http.Request) {
 
 	// DRY
-	session, err := session.Store.Get(r, "auth-session")
+	session, err := session.Store.Get(r, "subalogue-auth-session")
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return

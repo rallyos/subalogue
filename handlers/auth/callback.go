@@ -5,12 +5,13 @@ import (
 	"github.com/coreos/go-oidc"
 	"log"
 	"net/http"
+	"os"
 	"subalogue/helpers"
 	"subalogue/session"
 )
 
 func CallbackHandler(w http.ResponseWriter, r *http.Request) {
-	session, err := session.Store.Get(r, "auth-session")
+	session, err := session.Store.Get(r, "subalogue-auth-session")
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
@@ -41,7 +42,7 @@ func CallbackHandler(w http.ResponseWriter, r *http.Request) {
 	}
 
 	oidcConfig := &oidc.Config{
-		ClientID: "4uNQLwCkcWPYKoTmSLvot6L2u39VOhWi",
+		ClientID: os.Getenv("AUTH0_CLIENT_ID"),
 	}
 
 	idToken, err := authenticator.Provider.Verifier(oidcConfig).Verify(context.TODO(), rawIDToken)

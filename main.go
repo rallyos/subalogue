@@ -2,6 +2,7 @@ package main
 
 import (
 	"github.com/gorilla/mux"
+	_ "github.com/joho/godotenv/autoload"
 	_ "github.com/lib/pq"
 	"log"
 	"net/http"

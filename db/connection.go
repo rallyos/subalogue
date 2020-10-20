@@ -3,12 +3,13 @@ package db
 import (
 	"database/sql"
 	"log"
+	"os"
 )
 
 var Query *Queries
 
 func Init() {
-	conn, err := sql.Open("postgres", "user=subalogue password=subalogue dbname=subalogue_development host=db sslmode=disable")
+	conn, err := sql.Open("postgres", os.Getenv("DATABASE_URL"))
 	if err != nil {
 		log.Fatal(err)
 	}

@@ -18,7 +18,7 @@ func LoginHandler(w http.ResponseWriter, r *http.Request) {
 	}
 	state := base64.StdEncoding.EncodeToString(b)
 
-	session, err := session.Store.Get(r, "auth-session")
+	session, err := session.Store.Get(r, "subalogue-auth-session")
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return

@@ -2,4 +2,6 @@
 *.swp
 *.swa
 
+.env
+
 /tmp

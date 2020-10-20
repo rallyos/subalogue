@@ -11,7 +11,7 @@ var (
 )
 
 func Init() error {
-	Store = sessions.NewFilesystemStore("", []byte("auth-session"))
+	Store = sessions.NewFilesystemStore("", []byte("subalogue-auth-session"))
 	gob.Register(map[string]interface{}{})
 	return nil
 }

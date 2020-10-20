@@ -3,6 +3,7 @@ package helpers
 import (
 	"context"
 	"log"
+	"os"
 
 	"golang.org/x/oauth2"
 
@@ -18,16 +19,16 @@ type Authenticator struct {
 func NewAuthenticator() (*Authenticator, error) {
 	ctx := context.Background()
 
-	provider, err := oidc.NewProvider(ctx, "https://subalogue.eu.auth0.com/")
+	provider, err := oidc.NewProvider(ctx, os.Getenv("AUTH0_DOMAIN"))
 	if err != nil {
 		log.Printf("failed to get provider: %v", err)
 		return nil, err
 	}
 
 	conf := oauth2.Config{
-		ClientID:     "4uNQLwCkcWPYKoTmSLvot6L2u39VOhWi",
-		ClientSecret: "LwjwZEUxKpgWnvDi4may7-wyNBKEWdDOiaX4vE7FjhX6nwipWyNNRM12dRCC_oS7",
-		RedirectURL:  "http://localhost:8000/callback",
+		ClientID:     os.Getenv("AUTH0_CLIENT_ID"),
+		ClientSecret: os.Getenv("AUTH0_CLIENT_SECRET"),
+		RedirectURL:  os.Getenv("AUTH0_CALLBACK_URL"),
 		Endpoint:     provider.Endpoint(),
 		Scopes:       []string{oidc.ScopeOpenID, "profile"},
 	}
