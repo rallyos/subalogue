@@ -7,6 +7,7 @@ require (
 	github.com/go-playground/validator/v10 v10.4.0 // indirect
 	github.com/golang-migrate/migrate/v4 v4.13.0 // indirect
 	github.com/golang/protobuf v1.4.2 // indirect
+	github.com/gorilla/mux v1.8.0 // indirect
 	github.com/json-iterator/go v1.1.10 // indirect
 	github.com/lib/pq v1.8.0 // indirect
 	github.com/modern-go/concurrent v0.0.0-20180306012644-bacd9c7ef1dd // indirect
