@@ -1,11 +1,11 @@
-package handlers
+package auth
 
 import (
 	"context"
 	"github.com/coreos/go-oidc"
 	"log"
 	"net/http"
-	"subalogue/auth"
+	"subalogue/helpers"
 	"subalogue/session"
 )
 
@@ -21,7 +21,7 @@ func CallbackHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	authenticator, err := auth.NewAuthenticator()
+	authenticator, err := helpers.NewAuthenticator()
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return

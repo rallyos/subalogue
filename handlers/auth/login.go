@@ -1,10 +1,10 @@
-package handlers
+package auth
 
 import (
 	"crypto/rand"
 	"encoding/base64"
 	"net/http"
-	"subalogue/auth"
+	"subalogue/helpers"
 	"subalogue/session"
 )
 
@@ -30,7 +30,7 @@ func LoginHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	authenticator, err := auth.NewAuthenticator()
+	authenticator, err := helpers.NewAuthenticator()
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return

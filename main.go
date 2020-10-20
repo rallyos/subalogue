@@ -7,6 +7,7 @@ import (
 	"net/http"
 	"subalogue/db"
 	"subalogue/handlers"
+	"subalogue/handlers/auth"
 	"subalogue/handlers/subscriptions"
 	"subalogue/session"
 )
@@ -21,8 +22,8 @@ func main() {
 	// TODO subscriptions.Create
 	r.HandleFunc("/me/subscriptions", subscriptions.CreateSubscriptionHandler).Methods("POST")
 	r.HandleFunc("/me/subscriptions", subscriptions.ListSubscriptionsHandler).Methods("GET")
-	r.HandleFunc("/callback", handlers.CallbackHandler)
-	r.HandleFunc("/login", handlers.LoginHandler)
+	r.HandleFunc("/auth/callback", auth.CallbackHandler)
+	r.HandleFunc("/auth/login", auth.LoginHandler)
 
 	log.Fatal(http.ListenAndServe(":8000", r))
 }
