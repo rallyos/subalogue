@@ -1,6 +1,4 @@
-// app/app.go
-
-package app
+package session
 
 import (
 	"encoding/gob"
