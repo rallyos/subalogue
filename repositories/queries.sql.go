@@ -5,10 +5,9 @@ package db
 
 import (
 	"context"
-	"database/sql"
 )
 
-const createUserSubscriptions = `-- name: CreateUserSubscriptions :one
+const createUserSubscription = `-- name: CreateUserSubscription :one
 INSERT INTO subscriptions (
     user_id, name, price
 ) VALUES (
@@ -17,14 +16,14 @@ INSERT INTO subscriptions (
 RETURNING id, name, user_id, price
 `
 
-type CreateUserSubscriptionsParams struct {
-	UserID sql.NullInt32
+type CreateUserSubscriptionParams struct {
+	UserID int32
 	Name   string
 	Price  int32
 }
 
-func (q *Queries) CreateUserSubscriptions(ctx context.Context, arg CreateUserSubscriptionsParams) (Subscription, error) {
-	row := q.db.QueryRowContext(ctx, createUserSubscriptions, arg.UserID, arg.Name, arg.Price)
+func (q *Queries) CreateUserSubscription(ctx context.Context, arg CreateUserSubscriptionParams) (Subscription, error) {
+	row := q.db.QueryRowContext(ctx, createUserSubscription, arg.UserID, arg.Name, arg.Price)
 	var i Subscription
 	err := row.Scan(
 		&i.ID,
@@ -40,7 +39,7 @@ DELETE FROM subscriptions WHERE user_id = $1 AND id = $2
 `
 
 type DeleteSubscriptionParams struct {
-	UserID sql.NullInt32
+	UserID int32
 	ID     int32
 }
 
@@ -49,11 +48,22 @@ func (q *Queries) DeleteSubscription(ctx context.Context, arg DeleteSubscription
 	return err
 }
 
+const findUserByUsername = `-- name: FindUserByUsername :one
+SELECT id, username FROM users WHERE username = $1 LIMIT 1
+`
+
+func (q *Queries) FindUserByUsername(ctx context.Context, username string) (User, error) {
+	row := q.db.QueryRowContext(ctx, findUserByUsername, username)
+	var i User
+	err := row.Scan(&i.ID, &i.Username)
+	return i, err
+}
+
 const listUserSubscriptions = `-- name: ListUserSubscriptions :many
 SELECT id, name, user_id, price FROM subscriptions where user_id = $1
 `
 
-func (q *Queries) ListUserSubscriptions(ctx context.Context, userID sql.NullInt32) ([]Subscription, error) {
+func (q *Queries) ListUserSubscriptions(ctx context.Context, userID int32) ([]Subscription, error) {
 	rows, err := q.db.QueryContext(ctx, listUserSubscriptions, userID)
 	if err != nil {
 		return nil, err
@@ -88,7 +98,7 @@ WHERE user_id = $1 AND id = $4
 `
 
 type UpdateUserSubscriptionParams struct {
-	UserID sql.NullInt32
+	UserID int32
 	Name   string
 	Price  int32
 	ID     int32
