@@ -10,24 +10,29 @@ import (
 
 var ctx = context.Background()
 
-func CreateSubscriptionHandler(w http.ResponseWriter, r *http.Request) {
+func Create(w http.ResponseWriter, r *http.Request) {
+	// TODO Validate r.Body
+	// https://github.com/gorilla/schema If problems arise
 
-	// DRY
-	session, err := session.Store.Get(r, "subalogue-auth-session")
+	var subscription_params db.CreateUserSubscriptionParams
+
+	username, err := session.Get(r, "username")
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
 	}
-	var username = session.Values["username"].(string)
-	user, err := db.Query.FindUserByUsername(ctx, username)
 
-	var subscription_json db.CreateUserSubscriptionParams
+	user, err := db.Query.FindUserByUsername(ctx, username.(string))
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
 
-	dec := json.NewDecoder(r.Body)
-	dec.Decode(&subscription_json) // https://github.com/gorilla/schema If problems arise
+	decoder := json.NewDecoder(r.Body)
+	decoder.Decode(&subscription_params)
 
-	subscription_json.UserID = user.ID
-	db.Query.CreateUserSubscription(ctx, subscription_json)
+	subscription_params.UserID = user.ID
+	db.Query.CreateUserSubscription(ctx, subscription_params)
 
 	w.WriteHeader(http.StatusCreated)
 }

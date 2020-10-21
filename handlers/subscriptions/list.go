@@ -2,26 +2,28 @@ package subscriptions
 
 import (
 	"encoding/json"
-	"log"
 	"net/http"
 	"subalogue/db"
 	"subalogue/session"
 )
 
-func ListSubscriptionsHandler(w http.ResponseWriter, r *http.Request) {
-	// TODO Check if null and flip the Valid key when true
-	session, err := session.Store.Get(r, "subalogue-auth-session")
+func List(w http.ResponseWriter, r *http.Request) {
+	username, err := session.Get(r, "username")
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
 	}
-	var username = session.Values["username"].(string)
-	log.Println(username)
-	user, err := db.Query.FindUserByUsername(ctx, username)
+
+	user, err := db.Query.FindUserByUsername(ctx, username.(string))
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
 
 	subscriptions, err := db.Query.ListUserSubscriptions(ctx, user.ID)
 	if err != nil {
-		log.Fatal(err)
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
 	}
 
 	json.NewEncoder(w).Encode(subscriptions)

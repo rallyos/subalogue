@@ -17,6 +17,8 @@ type Authenticator struct {
 }
 
 func NewAuthenticator() (*Authenticator, error) {
+	// https://github.com/auth0-samples/auth0-golang-web-app/tree/master/01-Login
+
 	ctx := context.Background()
 
 	provider, err := oidc.NewProvider(ctx, os.Getenv("AUTH0_DOMAIN"))

@@ -8,11 +8,10 @@ import (
 
 var Query *Queries
 
-func Init() {
+func init() {
 	conn, err := sql.Open("postgres", os.Getenv("DATABASE_URL"))
 	if err != nil {
 		log.Fatal(err)
 	}
-
 	Query = New(conn)
 }

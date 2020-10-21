@@ -10,7 +10,9 @@ import (
 	"subalogue/session"
 )
 
-func CallbackHandler(w http.ResponseWriter, r *http.Request) {
+func Callback(w http.ResponseWriter, r *http.Request) {
+	// https://github.com/auth0-samples/auth0-golang-web-app/tree/master/01-Login
+
 	session, err := session.Store.Get(r, "subalogue-auth-session")
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
@@ -52,7 +54,6 @@ func CallbackHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	// Getting now the userInfo
 	var profile map[string]interface{}
 	if err := idToken.Claims(&profile); err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)

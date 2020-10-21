@@ -8,8 +8,9 @@ import (
 	"subalogue/session"
 )
 
-func LoginHandler(w http.ResponseWriter, r *http.Request) {
-	// Generate random state
+func Login(w http.ResponseWriter, r *http.Request) {
+	// https://github.com/auth0-samples/auth0-golang-web-app/tree/master/01-Login
+
 	b := make([]byte, 32)
 	_, err := rand.Read(b)
 	if err != nil {
