@@ -5,13 +5,13 @@ package db
 import ()
 
 type Subscription struct {
-	ID     int32
-	Name   string
-	UserID int32
-	Price  int32
+	ID     int32  `json:"id"`
+	Name   string `json:"name"`
+	UserID int32  `json:"user_id"`
+	Price  int32  `json:"price"`
 }
 
 type User struct {
-	ID       int32
-	Username string
+	ID       int32  `json:"id"`
+	Username string `json:"username"`
 }

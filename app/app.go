@@ -1,6 +1,8 @@
 package app
 
 import (
+	_ "github.com/joho/godotenv/autoload"
+	_ "github.com/lib/pq"
 	"log"
 	"net/http"
 
@@ -8,15 +10,15 @@ import (
 )
 
 type Server struct {
-	router *mux.Router
+	Router *mux.Router
 }
 
 func (s *Server) Initialize() {
-	s.router = mux.NewRouter()
+	s.Router = mux.NewRouter()
 	s.routes()
 }
 
 func (s *Server) Run() {
 	// TODO addr param
-	log.Fatal(http.ListenAndServe(":8000", s.router))
+	log.Fatal(http.ListenAndServe(":8000", s.Router))
 }

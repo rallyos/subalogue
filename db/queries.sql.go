@@ -17,9 +17,9 @@ RETURNING id, name, user_id, price
 `
 
 type CreateUserSubscriptionParams struct {
-	UserID int32
-	Name   string
-	Price  int32
+	UserID int32  `json:"user_id"`
+	Name   string `json:"name"`
+	Price  int32  `json:"price"`
 }
 
 func (q *Queries) CreateUserSubscription(ctx context.Context, arg CreateUserSubscriptionParams) (Subscription, error) {
@@ -39,8 +39,8 @@ DELETE FROM subscriptions WHERE user_id = $1 AND id = $2
 `
 
 type DeleteSubscriptionParams struct {
-	UserID int32
-	ID     int32
+	UserID int32 `json:"user_id"`
+	ID     int32 `json:"id"`
 }
 
 func (q *Queries) DeleteSubscription(ctx context.Context, arg DeleteSubscriptionParams) error {
@@ -98,10 +98,10 @@ WHERE user_id = $1 AND id = $4
 `
 
 type UpdateUserSubscriptionParams struct {
-	UserID int32
-	Name   string
-	Price  int32
-	ID     int32
+	UserID int32  `json:"user_id"`
+	Name   string `json:"name"`
+	Price  int32  `json:"price"`
+	ID     int32  `json:"id"`
 }
 
 func (q *Queries) UpdateUserSubscription(ctx context.Context, arg UpdateUserSubscriptionParams) error {
