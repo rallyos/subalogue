@@ -1,7 +1,7 @@
 CREATE TABLE subscriptions (
     id integer NOT NULL,
     name character varying(120) NOT NULL,
-    user_id integer,
+    user_id integer NOT NULL,
     price integer NOT NULL
 );
 
