@@ -7,7 +7,7 @@ import (
 	"context"
 )
 
-const createUserSubscription = `-- name: CreateUserSubscription :one
+const createSubscription = `-- name: CreateSubscription :one
 INSERT INTO subscriptions (
     user_id, name, price
 ) VALUES (
@@ -16,14 +16,14 @@ INSERT INTO subscriptions (
 RETURNING id, name, user_id, price
 `
 
-type CreateUserSubscriptionParams struct {
+type CreateSubscriptionParams struct {
 	UserID int32  `json:"user_id"`
 	Name   string `json:"name"`
 	Price  int32  `json:"price"`
 }
 
-func (q *Queries) CreateUserSubscription(ctx context.Context, arg CreateUserSubscriptionParams) (Subscription, error) {
-	row := q.db.QueryRowContext(ctx, createUserSubscription, arg.UserID, arg.Name, arg.Price)
+func (q *Queries) CreateSubscription(ctx context.Context, arg CreateSubscriptionParams) (Subscription, error) {
+	row := q.db.QueryRowContext(ctx, createSubscription, arg.UserID, arg.Name, arg.Price)
 	var i Subscription
 	err := row.Scan(
 		&i.ID,
@@ -31,6 +31,17 @@ func (q *Queries) CreateUserSubscription(ctx context.Context, arg CreateUserSubs
 		&i.UserID,
 		&i.Price,
 	)
+	return i, err
+}
+
+const createUser = `-- name: CreateUser :one
+INSERT INTO users (username) VALUES($1) RETURNING id, username
+`
+
+func (q *Queries) CreateUser(ctx context.Context, username string) (User, error) {
+	row := q.db.QueryRowContext(ctx, createUser, username)
+	var i User
+	err := row.Scan(&i.ID, &i.Username)
 	return i, err
 }
 
@@ -59,12 +70,12 @@ func (q *Queries) FindUserByUsername(ctx context.Context, username string) (User
 	return i, err
 }
 
-const listUserSubscriptions = `-- name: ListUserSubscriptions :many
+const listSubscriptions = `-- name: ListSubscriptions :many
 SELECT id, name, user_id, price FROM subscriptions where user_id = $1
 `
 
-func (q *Queries) ListUserSubscriptions(ctx context.Context, userID int32) ([]Subscription, error) {
-	rows, err := q.db.QueryContext(ctx, listUserSubscriptions, userID)
+func (q *Queries) ListSubscriptions(ctx context.Context, userID int32) ([]Subscription, error) {
+	rows, err := q.db.QueryContext(ctx, listSubscriptions, userID)
 	if err != nil {
 		return nil, err
 	}
@@ -91,21 +102,21 @@ func (q *Queries) ListUserSubscriptions(ctx context.Context, userID int32) ([]Su
 	return items, nil
 }
 
-const updateUserSubscription = `-- name: UpdateUserSubscription :exec
+const updateSubscription = `-- name: UpdateSubscription :exec
 UPDATE subscriptions
 SET name = $2, price = $3
 WHERE user_id = $1 AND id = $4
 `
 
-type UpdateUserSubscriptionParams struct {
+type UpdateSubscriptionParams struct {
 	UserID int32  `json:"user_id"`
 	Name   string `json:"name"`
 	Price  int32  `json:"price"`
 	ID     int32  `json:"id"`
 }
 
-func (q *Queries) UpdateUserSubscription(ctx context.Context, arg UpdateUserSubscriptionParams) error {
-	_, err := q.db.ExecContext(ctx, updateUserSubscription,
+func (q *Queries) UpdateSubscription(ctx context.Context, arg UpdateSubscriptionParams) error {
+	_, err := q.db.ExecContext(ctx, updateSubscription,
 		arg.UserID,
 		arg.Name,
 		arg.Price,

@@ -14,7 +14,7 @@ func Create(w http.ResponseWriter, r *http.Request) {
 
 	// TODO Validate r.Body
 	// https://github.com/gorilla/schema If problems arise
-	var subscription_params db.CreateUserSubscriptionParams
+	var subscription_params db.CreateSubscriptionParams
 
 	username, err := session.Get(r, "username")
 	if err != nil {
@@ -32,7 +32,7 @@ func Create(w http.ResponseWriter, r *http.Request) {
 	decoder.Decode(&subscription_params)
 
 	subscription_params.UserID = user.ID
-	query.CreateUserSubscription(ctx, subscription_params)
+	query.CreateSubscription(ctx, subscription_params)
 
 	w.WriteHeader(http.StatusCreated)
 }

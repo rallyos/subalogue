@@ -6,7 +6,9 @@ COPY . .
 RUN go get -d -v ./...
 RUN go install -v ./...
 
+RUN go get github.com/cespare/reflex
+
 EXPOSE 8000
 ENV SUBALOGUE_ENV=development
 
-CMD ["go", "run", "main.go"]
+CMD reflex -r '\.go$' -s -- sh -c 'go build . && ./subalogue'
