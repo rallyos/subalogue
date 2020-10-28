@@ -43,6 +43,7 @@ jobs:
     - name: Test
       env:
         DATABASE_URL: postgres://subalogue:subalogue@localhost:5432/subalogue_test?sslmode=disable
+        SESSION_KEY: test
         SUBALOGUE_ENV: test
       run: go test -v ./app
 
