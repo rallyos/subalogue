@@ -20,8 +20,8 @@ type Server struct {
 
 func (s *Server) Initialize() {
 	setEnv()
-	s.Router = mux.NewRouter()
 	db.Init()
+	s.Router = mux.NewRouter()
 	s.DB = db.GetConnection()
 	s.routes()
 }

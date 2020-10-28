@@ -2,15 +2,17 @@ package app
 
 import (
 	"bytes"
+	"net/http"
+	"net/http/httptest"
+	"os"
+	"subalogue/session"
+	"testing"
+
 	"github.com/golang-migrate/migrate/v4"
 	_ "github.com/golang-migrate/migrate/v4/database/postgres"
 	_ "github.com/golang-migrate/migrate/v4/source/file"
 	"github.com/joho/godotenv"
 	"github.com/matryer/is"
-	"net/http/httptest"
-	"os"
-	"subalogue/session"
-	"testing"
 )
 
 var server *Server
@@ -49,6 +51,14 @@ func populate() {
 	userRow.Scan(&username)
 }
 
+func setSessionKey(k, v string, req *http.Request, t *testing.T) {
+	s, err := session.Store.Get(req, os.Getenv("SESSION_KEY"))
+	if err != nil {
+		t.Error(err)
+	}
+	s.Values[k] = v
+}
+
 func TestPing(t *testing.T) {
 	is := is.New(t)
 
@@ -69,12 +79,7 @@ func TestCreateSubscriptions(t *testing.T) {
 
 	jsonStr := []byte(`{"name": "HBOGO", "price": 799}`)
 	req := httptest.NewRequest("POST", "/api/v1/me/subscriptions", bytes.NewBuffer(jsonStr))
-
-	s, err := session.Store.Get(req, os.Getenv("SESSION_KEY"))
-	if err != nil {
-		t.Error(err)
-	}
-	s.Values["username"] = username
+	setSessionKey("username", username, req, t)
 
 	w := httptest.NewRecorder()
 	server.Router.ServeHTTP(w, req)
@@ -89,12 +94,7 @@ func TestListSubscriptions(t *testing.T) {
 	is := is.New(t)
 
 	req := httptest.NewRequest("GET", "/api/v1/me/subscriptions", nil)
-
-	s, err := session.Store.Get(req, os.Getenv("SESSION_KEY"))
-	if err != nil {
-		t.Error(err)
-	}
-	s.Values["username"] = username
+	setSessionKey("username", username, req, t)
 
 	w := httptest.NewRecorder()
 	server.Router.ServeHTTP(w, req)
