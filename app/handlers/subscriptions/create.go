@@ -9,6 +9,7 @@ import (
 )
 
 func Create(w http.ResponseWriter, r *http.Request) {
+	w.Header().Set("Content-Type", "application/json")
 	ctx := context.Background()
 	query := db.GetQuery()
 
@@ -30,6 +31,15 @@ func Create(w http.ResponseWriter, r *http.Request) {
 
 	decoder := json.NewDecoder(r.Body)
 	decoder.Decode(&subscription_params)
+
+	if subscription_params.Name == "" {
+		err_map := map[string]string{
+			"name": "Name should not be empty.",
+		}
+		w.WriteHeader(http.StatusBadRequest)
+		json.NewEncoder(w).Encode(err_map)
+		return
+	}
 
 	subscription_params.UserID = user.ID
 	query.CreateSubscription(ctx, subscription_params)

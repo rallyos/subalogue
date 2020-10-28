@@ -9,6 +9,7 @@ import (
 )
 
 func List(w http.ResponseWriter, r *http.Request) {
+	w.Header().Set("Content-Type", "application/json")
 	ctx := context.Background()
 	query := db.GetQuery()
 
