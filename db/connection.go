@@ -2,17 +2,27 @@ package db
 
 import (
 	"database/sql"
+	_ "github.com/lib/pq"
 	"log"
 	"os"
 )
 
-var Query *Queries
+var query *Queries
+var connection *sql.DB
+var err error
 
-func Init() *sql.DB {
-	conn, err := sql.Open("postgres", os.Getenv("DATABASE_URL"))
+func Init() {
+	connection, err = sql.Open("postgres", os.Getenv("DATABASE_URL"))
 	if err != nil {
 		log.Fatal(err)
 	}
-	Query = New(conn)
-	return conn
+	query = New(connection)
+}
+
+func GetConnection() *sql.DB {
+	return connection
+}
+
+func GetQuery() *Queries {
+	return query
 }
