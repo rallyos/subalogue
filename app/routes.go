@@ -1,15 +1,15 @@
 package app
 
 import (
-	"subalogue/handlers"
-	"subalogue/handlers/auth"
-	"subalogue/handlers/subscriptions"
+	"subalogue/app/handlers"
+	"subalogue/app/handlers/auth"
+	"subalogue/app/handlers/subscriptions"
 )
 
 func (s *Server) routes() {
-	s.router.HandleFunc("/ping", handlers.PingHandler)
-	s.router.HandleFunc("/me/subscriptions", subscriptions.Create).Methods("POST")
-	s.router.HandleFunc("/me/subscriptions", subscriptions.List).Methods("GET")
-	s.router.HandleFunc("/auth/callback", auth.Callback)
-	s.router.HandleFunc("/auth/login", auth.Login)
+	s.Router.HandleFunc("/ping", handlers.PingHandler)
+	s.Router.HandleFunc("/api/v1/me/subscriptions", subscriptions.Create).Methods("POST")
+	s.Router.HandleFunc("/api/v1/me/subscriptions", subscriptions.List).Methods("GET")
+	s.Router.HandleFunc("/auth/callback", auth.Callback)
+	s.Router.HandleFunc("/auth/login", auth.Login)
 }

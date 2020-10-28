@@ -8,12 +8,12 @@ import (
 	"subalogue/session"
 )
 
-var ctx = context.Background()
-
 func Create(w http.ResponseWriter, r *http.Request) {
+	ctx := context.Background()
+	query := db.GetQuery()
+
 	// TODO Validate r.Body
 	// https://github.com/gorilla/schema If problems arise
-
 	var subscription_params db.CreateUserSubscriptionParams
 
 	username, err := session.Get(r, "username")
@@ -22,7 +22,7 @@ func Create(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	user, err := db.Query.FindUserByUsername(ctx, username.(string))
+	user, err := query.FindUserByUsername(ctx, username.(string))
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
@@ -32,7 +32,7 @@ func Create(w http.ResponseWriter, r *http.Request) {
 	decoder.Decode(&subscription_params)
 
 	subscription_params.UserID = user.ID
-	db.Query.CreateUserSubscription(ctx, subscription_params)
+	query.CreateUserSubscription(ctx, subscription_params)
 
 	w.WriteHeader(http.StatusCreated)
 }

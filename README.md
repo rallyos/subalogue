@@ -1,9 +1,10 @@
 ## Getting started
 
 ### Config
-You'll need an .env file with the following environment variables set:  
+You'll need an .env.{test,development} files with the following environment variables set:  
 ```
 DATABASE_URL
+SESSION_KEY
 AUTH0_CLIENT_ID
 AUTH0_DOMAIN
 AUTH0_CLIENT_SECRET

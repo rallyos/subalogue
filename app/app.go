@@ -3,20 +3,34 @@ package app
 import (
 	"log"
 	"net/http"
+	"os"
+
+	"github.com/joho/godotenv"
+
+	"database/sql"
+	"subalogue/db"
 
 	"github.com/gorilla/mux"
 )
 
 type Server struct {
-	router *mux.Router
+	Router *mux.Router
+	DB     *sql.DB
 }
 
 func (s *Server) Initialize() {
-	s.router = mux.NewRouter()
+	setEnv()
+	db.Init()
+	s.Router = mux.NewRouter()
+	s.DB = db.GetConnection()
 	s.routes()
+}
+
+func setEnv() {
+	godotenv.Load(".env." + os.Getenv("SUBALOGUE_ENV"))
 }
 
 func (s *Server) Run() {
 	// TODO addr param
-	log.Fatal(http.ListenAndServe(":8000", s.router))
+	log.Fatal(http.ListenAndServe(":8000", s.Router))
 }

@@ -5,5 +5,5 @@ import (
 )
 
 func PingHandler(w http.ResponseWriter, r *http.Request) {
-	w.Write([]byte("Pong\n"))
+	w.Write([]byte("Pong"))
 }

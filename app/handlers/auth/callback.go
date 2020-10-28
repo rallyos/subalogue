@@ -13,7 +13,7 @@ import (
 func Callback(w http.ResponseWriter, r *http.Request) {
 	// https://github.com/auth0-samples/auth0-golang-web-app/tree/master/01-Login
 
-	session, err := session.Store.Get(r, "subalogue-auth-session")
+	session, err := session.Store.Get(r, os.Getenv("SESSION_KEY"))
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
