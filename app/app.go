@@ -1,13 +1,11 @@
 package app
 
 import (
-	"fmt"
 	"log"
 	"net/http"
 	"os"
 
 	"github.com/joho/godotenv"
-	_ "github.com/lib/pq"
 
 	"database/sql"
 	"subalogue/db"
@@ -28,9 +26,7 @@ func (s *Server) Initialize() {
 }
 
 func setEnv() {
-	env := os.Getenv("SUBALOGUE_ENV")
-	godotenv.Load(".env." + env)
-	fmt.Println(".env." + env + " Loaded.")
+	godotenv.Load(".env." + os.Getenv("SUBALOGUE_ENV"))
 }
 
 func (s *Server) Run() {

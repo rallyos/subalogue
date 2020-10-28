@@ -2,16 +2,15 @@ package app
 
 import (
 	"bytes"
-	"net/http/httptest"
-	"os"
-	"subalogue/session"
-	"testing"
-
 	"github.com/golang-migrate/migrate/v4"
 	_ "github.com/golang-migrate/migrate/v4/database/postgres"
 	_ "github.com/golang-migrate/migrate/v4/source/file"
 	"github.com/joho/godotenv"
 	"github.com/matryer/is"
+	"net/http/httptest"
+	"os"
+	"subalogue/session"
+	"testing"
 )
 
 var server *Server
