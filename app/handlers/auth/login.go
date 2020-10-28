@@ -4,6 +4,7 @@ import (
 	"crypto/rand"
 	"encoding/base64"
 	"net/http"
+	"os"
 	"subalogue/helpers"
 	"subalogue/session"
 )
@@ -19,7 +20,7 @@ func Login(w http.ResponseWriter, r *http.Request) {
 	}
 	state := base64.StdEncoding.EncodeToString(b)
 
-	session, err := session.Store.Get(r, "subalogue-auth-session")
+	session, err := session.Store.Get(r, os.Getenv("SESSION_KEY"))
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return

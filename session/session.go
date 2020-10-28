@@ -2,9 +2,9 @@ package session
 
 import (
 	"encoding/gob"
-	"net/http"
-
 	"github.com/gorilla/sessions"
+	"net/http"
+	"os"
 )
 
 var (
@@ -13,12 +13,12 @@ var (
 
 func init() {
 	// https://github.com/auth0-samples/auth0-golang-web-app/tree/master/01-Login
-	Store = sessions.NewFilesystemStore("", []byte("subalogue-auth-session"))
+	Store = sessions.NewFilesystemStore("", []byte(os.Getenv("SESSION_KEY")))
 	gob.Register(map[string]interface{}{})
 }
 
 func Get(r *http.Request, key string) (interface{}, error) {
-	session, err := Store.Get(r, "subalogue-auth-session")
+	session, err := Store.Get(r, os.Getenv("SESSION_KEY"))
 	if err != nil {
 		return nil, err
 	}

@@ -8,8 +8,8 @@ import (
 
 func (s *Server) routes() {
 	s.Router.HandleFunc("/ping", handlers.PingHandler)
-	s.Router.HandleFunc("/me/subscriptions", subscriptions.Create).Methods("POST")
-	s.Router.HandleFunc("/me/subscriptions", subscriptions.List).Methods("GET")
+	s.Router.HandleFunc("/api/v1/me/subscriptions", subscriptions.Create).Methods("POST")
+	s.Router.HandleFunc("/api/v1/me/subscriptions", subscriptions.List).Methods("GET")
 	s.Router.HandleFunc("/auth/callback", auth.Callback)
 	s.Router.HandleFunc("/auth/login", auth.Login)
 }

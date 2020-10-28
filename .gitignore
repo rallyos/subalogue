@@ -2,6 +2,6 @@
 *.swp
 *.swa
 
-.env
+.env*
 
 /tmp
