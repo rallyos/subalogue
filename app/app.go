@@ -10,6 +10,7 @@ import (
 	"database/sql"
 	"subalogue/db"
 
+	"github.com/gorilla/handlers"
 	"github.com/gorilla/mux"
 )
 
@@ -32,5 +33,10 @@ func setEnv() {
 
 func (s *Server) Run() {
 	// TODO addr param
-	log.Fatal(http.ListenAndServe(":8000", s.Router))
+	// log.Fatal(http.ListenAndServe(":8000", s.Router))
+	origins := handlers.AllowedOrigins([]string{"http://localhost:8080"})
+	methods := handlers.AllowedMethods([]string{"GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"})
+	headers := handlers.AllowedHeaders([]string{"Content-Type", "Cookie"})
+	creds := handlers.AllowCredentials()
+	log.Fatal(http.ListenAndServe(":8000", handlers.CORS(origins, methods, headers, creds)(s.Router)))
 }

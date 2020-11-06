@@ -4,22 +4,23 @@ import (
 	"context"
 	"encoding/json"
 	"net/http"
+	"strconv"
 	"subalogue/db"
 	"subalogue/session"
+
+	"github.com/gorilla/mux"
 )
 
-func Create(w http.ResponseWriter, r *http.Request) {
-	if r.Method == "OPTIONS" {
-		w.WriteHeader(http.StatusOK)
-		return
-	}
+func Update(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "application/json")
 	ctx := context.Background()
 	query := db.GetQuery()
 
-	// TODO Validate r.Body
-	// https://github.com/gorilla/schema If problems arise
-	var subscription_params db.CreateSubscriptionParams
+	vars := mux.Vars(r)
+	subscriptionID, err := strconv.ParseInt(vars["id"], 10, 32)
+
+	//TODO: Validate
+	var subscriptionParams db.UpdateSubscriptionParams
 
 	username, err := session.Get(r, "username")
 	if err != nil {
@@ -34,9 +35,9 @@ func Create(w http.ResponseWriter, r *http.Request) {
 	}
 
 	decoder := json.NewDecoder(r.Body)
-	decoder.Decode(&subscription_params)
+	decoder.Decode(&subscriptionParams)
 
-	if subscription_params.Name == "" {
+	if subscriptionParams.Name == "" {
 		err_map := map[string]string{
 			"name": "Name should not be empty.",
 		}
@@ -45,7 +46,7 @@ func Create(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	if subscription_params.Url == "" {
+	if subscriptionParams.Url == "" {
 		err_map := map[string]string{
 			"name": "Name should not be empty.",
 		}
@@ -54,13 +55,19 @@ func Create(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	subscription_params.UserID = user.ID
-	created_sub, err := query.CreateSubscription(ctx, subscription_params)
 	if err != nil {
-		http.Error(w, err.Error(), http.StatusInternalServerError)
+		w.WriteHeader(http.StatusBadRequest)
 		return
 	}
 
-	w.WriteHeader(http.StatusCreated)
-	json.NewEncoder(w).Encode(created_sub)
+	subscriptionParams.UserID = user.ID
+	subscriptionParams.ID = int32(subscriptionID)
+
+	_, err = query.UpdateSubscription(ctx, subscriptionParams)
+	if err != nil {
+		http.Error(w, "", http.StatusNotFound)
+		return
+	}
+
+	w.WriteHeader(http.StatusOK)
 }

@@ -36,10 +36,6 @@ func List(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	if len(subscriptions) == 0 {
-		subscriptions = make([]db.Subscription, 0)
-	}
-
 	subs := map[string][]db.Subscription{
 		"subscriptions": subscriptions,
 	}
