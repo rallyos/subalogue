@@ -2,7 +2,6 @@ package subscriptions
 
 import (
 	"context"
-	"encoding/json"
 	"net/http"
 	"strconv"
 	"subalogue/db"
@@ -11,7 +10,7 @@ import (
 	"github.com/gorilla/mux"
 )
 
-func Update(w http.ResponseWriter, r *http.Request) {
+func Delete(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "application/json")
 	ctx := context.Background()
 	query := db.GetQuery()
@@ -20,38 +19,16 @@ func Update(w http.ResponseWriter, r *http.Request) {
 	subscriptionID, err := strconv.ParseInt(vars["id"], 10, 32)
 
 	//TODO: Validate
-	var subscriptionParams db.UpdateSubscriptionParams
+	var subscriptionParams db.DeleteSubscriptionParams
 
 	username, err := session.Get(r, "username")
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
 	}
-
 	user, err := query.FindUserByUsername(ctx, username.(string))
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
-		return
-	}
-
-	decoder := json.NewDecoder(r.Body)
-	decoder.Decode(&subscriptionParams)
-
-	if subscriptionParams.Name == "" {
-		errMap := map[string]string{
-			"name": "Name should not be empty.",
-		}
-		w.WriteHeader(http.StatusBadRequest)
-		json.NewEncoder(w).Encode(errMap)
-		return
-	}
-
-	if subscriptionParams.Url == "" {
-		errMap := map[string]string{
-			"Url": "Url should not be empty.",
-		}
-		w.WriteHeader(http.StatusBadRequest)
-		json.NewEncoder(w).Encode(errMap)
 		return
 	}
 
@@ -63,11 +40,11 @@ func Update(w http.ResponseWriter, r *http.Request) {
 	subscriptionParams.UserID = user.ID
 	subscriptionParams.ID = int32(subscriptionID)
 
-	_, err = query.UpdateSubscription(ctx, subscriptionParams)
+	_, err = query.DeleteSubscription(ctx, subscriptionParams)
 	if err != nil {
 		http.Error(w, "", http.StatusNotFound)
 		return
 	}
 
-	w.WriteHeader(http.StatusOK)
+	w.WriteHeader(http.StatusNoContent)
 }

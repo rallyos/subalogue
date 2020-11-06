@@ -2,6 +2,7 @@ package app
 
 import (
 	"bytes"
+	"fmt"
 	"net/http"
 	"net/http/httptest"
 	"os"
@@ -41,14 +42,19 @@ func migrateDB() {
 }
 
 func clearDB() {
-	server.DB.Exec("TRUNCATE users CASCADE")
-	server.DB.Exec("ALTER SEQUENCE users_id_seq RESTART")
-	server.DB.Exec("UPDATE users SET id = DEFAULT")
+	tables := []string{"users", "subscriptions"}
+	for i := 0; i < len(tables); i++ {
+		server.DB.Exec(fmt.Sprintf("TRUNCATE %s CASCADE", tables[i]))
+		server.DB.Exec(fmt.Sprintf("ALTER SEQUENCE %s_id_seq RESTART", tables[i]))
+		server.DB.Exec("UPDATE %s SET id = DEFAULT", tables[i])
+	}
 }
 
 func populate() {
 	userRow := server.DB.QueryRow(`INSERT INTO users(username) VALUES ('dmralev') RETURNING username`)
 	userRow.Scan(&username)
+	subscriptionRow := server.DB.QueryRow(`INSERT INTO subscriptions(name, url, price, username) VALUES ('Brilliant', 'https://brilliant.org', 5900, 'dmralev') RETURNING *`)
+	subscriptionRow.Scan(&username)
 }
 
 func setSessionKey(k, v string, req *http.Request, t *testing.T) {
@@ -67,27 +73,11 @@ func TestPing(t *testing.T) {
 
 	server.Router.ServeHTTP(w, req)
 
-	expected_code, expected_body := 200, "Pong"
-	status_code, body := w.Result().StatusCode, w.Body.String()
+	expectedCode, expected_body := 200, "Pong"
+	statusCode, body := w.Result().StatusCode, w.Body.String()
 
-	is.Equal(status_code, expected_code)
+	is.Equal(statusCode, expectedCode)
 	is.Equal(body, expected_body)
-}
-
-func TestCreateSubscriptions(t *testing.T) {
-	is := is.New(t)
-
-	jsonStr := []byte(`{"name": "HBOGO", "price": 799}`)
-	req := httptest.NewRequest("POST", "/api/v1/me/subscriptions", bytes.NewBuffer(jsonStr))
-	setSessionKey("username", username, req, t)
-
-	w := httptest.NewRecorder()
-	server.Router.ServeHTTP(w, req)
-
-	expected_code := 201
-	status_code := w.Result().StatusCode
-
-	is.Equal(status_code, expected_code)
 }
 
 func TestListSubscriptions(t *testing.T) {
@@ -99,8 +89,55 @@ func TestListSubscriptions(t *testing.T) {
 	w := httptest.NewRecorder()
 	server.Router.ServeHTTP(w, req)
 
-	expected_code := 200
-	status_code := w.Result().StatusCode
+	expectedCode := 200
+	statusCode := w.Result().StatusCode
 
-	is.Equal(status_code, expected_code)
+	is.Equal(statusCode, expectedCode)
+}
+
+func TestCreateSubscriptions(t *testing.T) {
+	is := is.New(t)
+
+	jsonStr := []byte(`{"name": "Brain.fm", "url": "https://brain.fm", "price": 299}`)
+	req := httptest.NewRequest("POST", "/api/v1/me/subscriptions", bytes.NewBuffer(jsonStr))
+	setSessionKey("username", username, req, t)
+
+	w := httptest.NewRecorder()
+	server.Router.ServeHTTP(w, req)
+
+	expectedCode := 201
+	statusCode := w.Result().StatusCode
+
+	is.Equal(statusCode, expectedCode)
+}
+
+func TestUpdateSubscriptions(t *testing.T) {
+	is := is.New(t)
+
+	jsonStr := []byte(`{"name": "Brain.fm", "url": "https://brain.fm", "price": 399}`)
+	req := httptest.NewRequest("PUT", "/api/v1/me/subscriptions/1", bytes.NewBuffer(jsonStr))
+	setSessionKey("username", username, req, t)
+
+	w := httptest.NewRecorder()
+	server.Router.ServeHTTP(w, req)
+
+	expectedCode := 200
+	statusCode := w.Result().StatusCode
+
+	is.Equal(statusCode, expectedCode)
+}
+
+func TestDeleteSubscriptions(t *testing.T) {
+	is := is.New(t)
+
+	req := httptest.NewRequest("DELETE", "/api/v1/me/subscriptions/1", nil)
+	setSessionKey("username", username, req, t)
+
+	w := httptest.NewRecorder()
+	server.Router.ServeHTTP(w, req)
+
+	expectedCode := 204
+	statusCode := w.Result().StatusCode
+
+	is.Equal(statusCode, expectedCode)
 }

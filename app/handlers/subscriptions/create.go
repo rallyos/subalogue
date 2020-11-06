@@ -19,7 +19,7 @@ func Create(w http.ResponseWriter, r *http.Request) {
 
 	// TODO Validate r.Body
 	// https://github.com/gorilla/schema If problems arise
-	var subscription_params db.CreateSubscriptionParams
+	var subscriptionParams db.CreateSubscriptionParams
 
 	username, err := session.Get(r, "username")
 	if err != nil {
@@ -34,33 +34,34 @@ func Create(w http.ResponseWriter, r *http.Request) {
 	}
 
 	decoder := json.NewDecoder(r.Body)
-	decoder.Decode(&subscription_params)
+	decoder.Decode(&subscriptionParams)
 
-	if subscription_params.Name == "" {
-		err_map := map[string]string{
+	if subscriptionParams.Name == "" {
+		errMap := map[string]string{
 			"name": "Name should not be empty.",
 		}
 		w.WriteHeader(http.StatusBadRequest)
-		json.NewEncoder(w).Encode(err_map)
+		json.NewEncoder(w).Encode(errMap)
 		return
 	}
 
-	if subscription_params.Url == "" {
-		err_map := map[string]string{
-			"name": "Name should not be empty.",
+	if subscriptionParams.Url == "" {
+		errMap := map[string]string{
+			"url": "Url should not be empty.",
 		}
 		w.WriteHeader(http.StatusBadRequest)
-		json.NewEncoder(w).Encode(err_map)
+		json.NewEncoder(w).Encode(errMap)
 		return
 	}
 
-	subscription_params.UserID = user.ID
-	created_sub, err := query.CreateSubscription(ctx, subscription_params)
+	subscriptionParams.UserID = user.ID
+
+	createdSub, err := query.CreateSubscription(ctx, subscriptionParams)
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
 	}
 
 	w.WriteHeader(http.StatusCreated)
-	json.NewEncoder(w).Encode(created_sub)
+	json.NewEncoder(w).Encode(createdSub)
 }

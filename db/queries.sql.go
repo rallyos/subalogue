@@ -52,8 +52,8 @@ func (q *Queries) CreateUser(ctx context.Context, username string) (User, error)
 	return i, err
 }
 
-const deleteSubscription = `-- name: DeleteSubscription :exec
-DELETE FROM subscriptions WHERE user_id = $1 AND id = $2
+const deleteSubscription = `-- name: DeleteSubscription :one
+DELETE FROM subscriptions WHERE user_id = $1 AND id = $2 RETURNING id, name, user_id, price, url
 `
 
 type DeleteSubscriptionParams struct {
@@ -61,9 +61,17 @@ type DeleteSubscriptionParams struct {
 	ID     int32 `json:"id"`
 }
 
-func (q *Queries) DeleteSubscription(ctx context.Context, arg DeleteSubscriptionParams) error {
-	_, err := q.db.ExecContext(ctx, deleteSubscription, arg.UserID, arg.ID)
-	return err
+func (q *Queries) DeleteSubscription(ctx context.Context, arg DeleteSubscriptionParams) (Subscription, error) {
+	row := q.db.QueryRowContext(ctx, deleteSubscription, arg.UserID, arg.ID)
+	var i Subscription
+	err := row.Scan(
+		&i.ID,
+		&i.Name,
+		&i.UserID,
+		&i.Price,
+		&i.Url,
+	)
+	return i, err
 }
 
 const findUserByUsername = `-- name: FindUserByUsername :one
