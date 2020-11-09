@@ -1,4 +1,20 @@
-## Getting started
+<p align="center">
+  <img src="logo.png" width="400" height="100"/>
+</p>
+
+---  
+
+<p align="center">
+  The API server side of https://subalogue.shifting-photons.dev</br>
+  <strong>A nice welcoming first sentence hoes here.</strong>
+</p>
+
+## Features
+
+## How To Use
+
+## How To Contribute
+
 
 ### Config
 You'll need an .env.{test,development} files with the following environment variables set:  
