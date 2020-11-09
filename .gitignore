@@ -2,7 +2,7 @@
 *.swp
 *.swa
 
-.env*
+.env.development
 
 /tmp
 subalogue
