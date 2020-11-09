@@ -30,7 +30,7 @@ func (s *Server) Initialize() {
 func setEnv() {
 	err := godotenv.Load(".env." + os.Getenv("SUBALOGUE_ENV"))
 	if err != nil {
-		log.Fatal(err)
+		log.Println(err)
 	}
 }
 
