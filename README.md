@@ -11,9 +11,17 @@
 </p>
 
 ## Features
+- Keep a list your subscriptions
+- ... more to come
 
 ## Roadmap
-
+- Set the period on which the subscription is paid
+- Set subscription category
+- Set subscription tags
+- Filter by payment period, category or tags
+- Filter by keyword
+  
+  
 ## How To Use
 
 ## How To Contribute
