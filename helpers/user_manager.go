@@ -2,6 +2,7 @@ package helpers
 
 import (
 	"context"
+	"log"
 	"net/http"
 	"subalogue/db"
 	"subalogue/session"
@@ -12,7 +13,10 @@ func CreateUser(username string) {
 	ctx := context.Background()
 	userFound, _ := query.FindUserByUsername(ctx, username)
 	if userFound.ID == 0 {
-		query.CreateUser(ctx, username)
+		_, err := query.CreateUser(ctx, username)
+		if err != nil {
+			log.Fatal(err)
+		}
 	}
 }
 

@@ -3,6 +3,7 @@ package subscriptions
 import (
 	"context"
 	"encoding/json"
+	"log"
 	"net/http"
 	"subalogue/app/validators"
 	"subalogue/db"
@@ -26,7 +27,10 @@ func Create(w http.ResponseWriter, r *http.Request) {
 	}
 
 	decoder := json.NewDecoder(r.Body)
-	decoder.Decode(&subscriptionParams)
+	err = decoder.Decode(&subscriptionParams)
+	if err != nil {
+		log.Fatal(err)
+	}
 
 	// Validator should accept the generalized Subscription struct
 	valid, paramErrors := validators.ValidateSubscription(
@@ -37,7 +41,10 @@ func Create(w http.ResponseWriter, r *http.Request) {
 
 	if !valid {
 		w.WriteHeader(http.StatusBadRequest)
-		json.NewEncoder(w).Encode(paramErrors)
+		err = json.NewEncoder(w).Encode(paramErrors)
+		if err != nil {
+			log.Fatal(err)
+		}
 		return
 	}
 
@@ -49,5 +56,8 @@ func Create(w http.ResponseWriter, r *http.Request) {
 	}
 
 	w.WriteHeader(http.StatusCreated)
-	json.NewEncoder(w).Encode(createdSub)
+	err = json.NewEncoder(w).Encode(createdSub)
+	if err != nil {
+		log.Fatal(err)
+	}
 }

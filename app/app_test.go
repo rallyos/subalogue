@@ -20,7 +20,13 @@ var server *Server
 var username string
 
 func init() {
-	godotenv.Load("../.env.test")
+	t := testing.T{}
+
+	err := godotenv.Load("../.env.test")
+	if err != nil {
+		t.Log(err)
+	}
+
 	server = &Server{}
 	server.Initialize()
 	preSetup()
@@ -47,11 +53,14 @@ func migrateDB() {
 }
 
 func clearDB() {
+	t := testing.T{}
+
 	tables := []string{"users", "subscriptions"}
 	for i := 0; i < len(tables); i++ {
-		server.DB.Exec(fmt.Sprintf("TRUNCATE %s CASCADE", tables[i]))
-		server.DB.Exec(fmt.Sprintf("ALTER SEQUENCE %s_id_seq RESTART", tables[i]))
-		server.DB.Exec("UPDATE %s SET id = DEFAULT", tables[i])
+		_, err := server.DB.Exec(fmt.Sprintf("TRUNCATE %[1]s CASCADE; ALTER SEQUENCE %[1]s_id_seq RESTART; UPDATE %[1]s SET id = DEFAULT", tables[i]))
+		if err != nil {
+			t.Log(err)
+		}
 	}
 }
 
