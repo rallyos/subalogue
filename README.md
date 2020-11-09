@@ -5,6 +5,7 @@
 ---  
 
 <p align="center">
+  <img src="https://img.shields.io/badge/version-0.1.0-brightgreen" align="center"/></br>
   The API server side of https://subalogue.shifting-photons.dev</br>
   <strong>A nice welcoming first sentence hoes here.</strong>
 </p>
