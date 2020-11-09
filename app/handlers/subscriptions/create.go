@@ -35,7 +35,7 @@ func Create(w http.ResponseWriter, r *http.Request) {
 			Url:   subscriptionParams.Url,
 			Price: subscriptionParams.Price})
 
-	if valid == false {
+	if !valid {
 		w.WriteHeader(http.StatusBadRequest)
 		json.NewEncoder(w).Encode(paramErrors)
 		return

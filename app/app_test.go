@@ -34,11 +34,16 @@ func preSetup() {
 
 func migrateDB() {
 	t := testing.T{}
+
 	m, err := migrate.New("file://../db/migrations", os.Getenv("DATABASE_URL"))
 	if err != nil {
 		t.Log(err)
 	}
-	m.Up()
+
+	err = m.Up()
+	if err != nil {
+		t.Log(err)
+	}
 }
 
 func clearDB() {
@@ -51,10 +56,16 @@ func clearDB() {
 }
 
 func populate() {
+	t := testing.T{}
+
 	userRow := server.DB.QueryRow(`INSERT INTO users(username) VALUES ('dmralev') RETURNING username`)
-	userRow.Scan(&username)
+	if err := userRow.Scan(&username); err != nil {
+		t.Log(err)
+	}
 	subscriptionRow := server.DB.QueryRow(`INSERT INTO subscriptions(name, url, price, username) VALUES ('Brilliant', 'https://brilliant.org', 5900, 'dmralev') RETURNING *`)
-	subscriptionRow.Scan(&username)
+	if err := subscriptionRow.Scan(&username); err != nil {
+		t.Log(err)
+	}
 }
 
 func setSessionKey(k, v string, req *http.Request, t *testing.T) {

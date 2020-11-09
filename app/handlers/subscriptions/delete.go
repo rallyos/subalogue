@@ -17,7 +17,7 @@ func Delete(w http.ResponseWriter, r *http.Request) {
 	var subscriptionParams db.DeleteSubscriptionParams
 
 	w.Header().Set("Content-Type", "application/json")
-	subscriptionID, err := strconv.ParseInt(vars["id"], 10, 32)
+	subscriptionID, _ := strconv.ParseInt(vars["id"], 10, 32)
 
 	user, err := helpers.GetSessionUser(r)
 	if err != nil {

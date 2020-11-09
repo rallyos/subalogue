@@ -13,4 +13,5 @@ jobs:
 
       - name: golangci-lint
         uses: reviewdog/action-golangci-lint@v1
-
+        with:
+          level: warning

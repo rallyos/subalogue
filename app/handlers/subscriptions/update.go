@@ -18,7 +18,7 @@ func Update(w http.ResponseWriter, r *http.Request) {
 	query := db.GetQuery()
 
 	vars := mux.Vars(r)
-	subscriptionID, err := strconv.ParseInt(vars["id"], 10, 32)
+	subscriptionID, _ := strconv.ParseInt(vars["id"], 10, 32)
 
 	var subscriptionParams db.UpdateSubscriptionParams
 
@@ -39,7 +39,7 @@ func Update(w http.ResponseWriter, r *http.Request) {
 			Url:   subscriptionParams.Url,
 			Price: subscriptionParams.Price})
 
-	if valid == false {
+	if !valid {
 		w.WriteHeader(http.StatusBadRequest)
 		json.NewEncoder(w).Encode(paramErrors)
 		return
