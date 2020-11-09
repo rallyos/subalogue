@@ -20,7 +20,13 @@ var server *Server
 var username string
 
 func init() {
-	godotenv.Load("../.env.test")
+	t := testing.T{}
+
+	err := godotenv.Load("../.env.test")
+	if err != nil {
+		t.Log(err)
+	}
+
 	server = &Server{}
 	server.Initialize()
 	preSetup()
@@ -34,27 +40,41 @@ func preSetup() {
 
 func migrateDB() {
 	t := testing.T{}
+
 	m, err := migrate.New("file://../db/migrations", os.Getenv("DATABASE_URL"))
 	if err != nil {
 		t.Log(err)
 	}
-	m.Up()
+
+	err = m.Up()
+	if err != nil {
+		t.Log(err)
+	}
 }
 
 func clearDB() {
+	t := testing.T{}
+
 	tables := []string{"users", "subscriptions"}
 	for i := 0; i < len(tables); i++ {
-		server.DB.Exec(fmt.Sprintf("TRUNCATE %s CASCADE", tables[i]))
-		server.DB.Exec(fmt.Sprintf("ALTER SEQUENCE %s_id_seq RESTART", tables[i]))
-		server.DB.Exec("UPDATE %s SET id = DEFAULT", tables[i])
+		_, err := server.DB.Exec(fmt.Sprintf("TRUNCATE %[1]s CASCADE; ALTER SEQUENCE %[1]s_id_seq RESTART; UPDATE %[1]s SET id = DEFAULT", tables[i]))
+		if err != nil {
+			t.Log(err)
+		}
 	}
 }
 
 func populate() {
+	t := testing.T{}
+
 	userRow := server.DB.QueryRow(`INSERT INTO users(username) VALUES ('dmralev') RETURNING username`)
-	userRow.Scan(&username)
+	if err := userRow.Scan(&username); err != nil {
+		t.Log(err)
+	}
 	subscriptionRow := server.DB.QueryRow(`INSERT INTO subscriptions(name, url, price, username) VALUES ('Brilliant', 'https://brilliant.org', 5900, 'dmralev') RETURNING *`)
-	subscriptionRow.Scan(&username)
+	if err := subscriptionRow.Scan(&username); err != nil {
+		t.Log(err)
+	}
 }
 
 func setSessionKey(k, v string, req *http.Request, t *testing.T) {

@@ -28,7 +28,10 @@ func (s *Server) Initialize() {
 }
 
 func setEnv() {
-	godotenv.Load(".env." + os.Getenv("SUBALOGUE_ENV"))
+	err := godotenv.Load(".env." + os.Getenv("SUBALOGUE_ENV"))
+	if err != nil {
+		log.Println(err)
+	}
 }
 
 func (s *Server) Run() {

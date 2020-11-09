@@ -3,6 +3,7 @@ package subscriptions
 import (
 	"context"
 	"encoding/json"
+	"log"
 	"net/http"
 	"strconv"
 	"subalogue/app/validators"
@@ -18,7 +19,7 @@ func Update(w http.ResponseWriter, r *http.Request) {
 	query := db.GetQuery()
 
 	vars := mux.Vars(r)
-	subscriptionID, err := strconv.ParseInt(vars["id"], 10, 32)
+	subscriptionID, _ := strconv.ParseInt(vars["id"], 10, 32)
 
 	var subscriptionParams db.UpdateSubscriptionParams
 
@@ -31,7 +32,10 @@ func Update(w http.ResponseWriter, r *http.Request) {
 	}
 
 	decoder := json.NewDecoder(r.Body)
-	decoder.Decode(&subscriptionParams)
+	err = decoder.Decode(&subscriptionParams)
+	if err != nil {
+		log.Fatal(err)
+	}
 
 	valid, paramErrors := validators.ValidateSubscription(
 		db.Subscription{
@@ -39,9 +43,12 @@ func Update(w http.ResponseWriter, r *http.Request) {
 			Url:   subscriptionParams.Url,
 			Price: subscriptionParams.Price})
 
-	if valid == false {
+	if !valid {
 		w.WriteHeader(http.StatusBadRequest)
-		json.NewEncoder(w).Encode(paramErrors)
+		err := json.NewEncoder(w).Encode(paramErrors)
+		if err != nil {
+			log.Fatal(err)
+		}
 		return
 	}
 
@@ -55,5 +62,8 @@ func Update(w http.ResponseWriter, r *http.Request) {
 	}
 
 	w.WriteHeader(http.StatusOK)
-	json.NewEncoder(w).Encode(updatedSub)
+	err = json.NewEncoder(w).Encode(updatedSub)
+	if err != nil {
+		log.Fatal(err)
+	}
 }

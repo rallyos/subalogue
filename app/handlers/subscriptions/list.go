@@ -3,6 +3,7 @@ package subscriptions
 import (
 	"context"
 	"encoding/json"
+	"log"
 	"net/http"
 	"subalogue/db"
 	"subalogue/helpers"
@@ -31,5 +32,8 @@ func List(w http.ResponseWriter, r *http.Request) {
 		"subscriptions": subscriptions,
 	}
 
-	json.NewEncoder(w).Encode(subs)
+	err = json.NewEncoder(w).Encode(subs)
+	if err != nil {
+		log.Fatal(err)
+	}
 }
