@@ -9,6 +9,7 @@ type Subscription struct {
 	Name   string `json:"name"`
 	UserID int32  `json:"user_id"`
 	Price  int32  `json:"price"`
+	Url    string `json:"url"`
 }
 
 type User struct {

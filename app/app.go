@@ -8,6 +8,7 @@ import (
 	"github.com/joho/godotenv"
 
 	"database/sql"
+	"subalogue/app/middlewares"
 	"subalogue/db"
 
 	"github.com/gorilla/mux"
@@ -31,6 +32,8 @@ func setEnv() {
 }
 
 func (s *Server) Run() {
+	s.Router.Use(middlewares.LoggingMiddleware)
+	s.Router.Use(middlewares.CORSMiddleware)
 	// TODO addr param
 	log.Fatal(http.ListenAndServe(":8000", s.Router))
 }

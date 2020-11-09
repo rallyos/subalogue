@@ -60,14 +60,19 @@ func Callback(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
+	username := profile["nickname"].(string)
+
 	session.Values["id_token"] = rawIDToken
 	session.Values["access_token"] = token.AccessToken
-	session.Values["username"] = profile["nickname"]
+	session.Values["username"] = username
+
+	helpers.CreateUser(username)
+
 	err = session.Save(r, w)
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
 	}
 
-	http.Redirect(w, r, "/me/subscriptions", http.StatusSeeOther)
+	http.Redirect(w, r, "http://localhost:8080/app", http.StatusSeeOther)
 }

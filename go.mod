@@ -5,6 +5,7 @@ go 1.14
 require (
 	github.com/coreos/go-oidc v2.2.1+incompatible
 	github.com/golang-migrate/migrate/v4 v4.13.0
+	github.com/gorilla/handlers v1.5.1
 	github.com/gorilla/mux v1.8.0
 	github.com/gorilla/sessions v1.2.1
 	github.com/joho/godotenv v1.3.0

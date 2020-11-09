@@ -4,18 +4,23 @@ import (
 	"context"
 	"encoding/json"
 	"net/http"
+	"strconv"
 	"subalogue/app/validators"
 	"subalogue/db"
 	"subalogue/helpers"
+
+	"github.com/gorilla/mux"
 )
 
-func Create(w http.ResponseWriter, r *http.Request) {
+func Update(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "application/json")
 	ctx := context.Background()
 	query := db.GetQuery()
 
-	// https://github.com/gorilla/schema If problems arise
-	var subscriptionParams db.CreateSubscriptionParams
+	vars := mux.Vars(r)
+	subscriptionID, err := strconv.ParseInt(vars["id"], 10, 32)
+
+	var subscriptionParams db.UpdateSubscriptionParams
 
 	user, err := helpers.GetSessionUser(r)
 	if err != nil {
@@ -28,7 +33,6 @@ func Create(w http.ResponseWriter, r *http.Request) {
 	decoder := json.NewDecoder(r.Body)
 	decoder.Decode(&subscriptionParams)
 
-	// Validator should accept the generalized Subscription struct
 	valid, paramErrors := validators.ValidateSubscription(
 		db.Subscription{
 			Name:  subscriptionParams.Name,
@@ -42,12 +46,14 @@ func Create(w http.ResponseWriter, r *http.Request) {
 	}
 
 	subscriptionParams.UserID = user.ID
-	createdSub, err := query.CreateSubscription(ctx, subscriptionParams)
+	subscriptionParams.ID = int32(subscriptionID)
+
+	updatedSub, err := query.UpdateSubscription(ctx, subscriptionParams)
 	if err != nil {
-		http.Error(w, err.Error(), http.StatusInternalServerError)
+		http.Error(w, "", http.StatusNotFound)
 		return
 	}
 
-	w.WriteHeader(http.StatusCreated)
-	json.NewEncoder(w).Encode(createdSub)
+	w.WriteHeader(http.StatusOK)
+	json.NewEncoder(w).Encode(updatedSub)
 }
