@@ -20,7 +20,6 @@ func Update(w http.ResponseWriter, r *http.Request) {
 	vars := mux.Vars(r)
 	subscriptionID, err := strconv.ParseInt(vars["id"], 10, 32)
 
-	//TODO: Validate
 	var subscriptionParams db.UpdateSubscriptionParams
 
 	user, err := helpers.GetSessionUser(r)
@@ -34,7 +33,6 @@ func Update(w http.ResponseWriter, r *http.Request) {
 	decoder := json.NewDecoder(r.Body)
 	decoder.Decode(&subscriptionParams)
 
-	// Validator should accept the generalized Subscription struct
 	valid, paramErrors := validators.ValidateSubscription(
 		db.Subscription{
 			Name:  subscriptionParams.Name,

@@ -10,15 +10,10 @@ import (
 )
 
 func Create(w http.ResponseWriter, r *http.Request) {
-	// if r.Method == "OPTIONS" {
-	// 	w.WriteHeader(http.StatusOK)
-	// 	return
-	// }
 	w.Header().Set("Content-Type", "application/json")
 	ctx := context.Background()
 	query := db.GetQuery()
 
-	// TODO Validate r.Body
 	// https://github.com/gorilla/schema If problems arise
 	var subscriptionParams db.CreateSubscriptionParams
 
