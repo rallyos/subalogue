@@ -5,7 +5,7 @@ import (
 	"encoding/json"
 	"net/http"
 	"subalogue/db"
-	"subalogue/session"
+	"subalogue/helpers"
 )
 
 func List(w http.ResponseWriter, r *http.Request) {
@@ -13,20 +13,11 @@ func List(w http.ResponseWriter, r *http.Request) {
 	ctx := context.Background()
 	query := db.GetQuery()
 
-	// TODO Catch https://github.com/gorilla/sessions/issues/209#issuecomment-694341696
-	username, err := session.Get(r, "username")
+	user, err := helpers.GetSessionUser(r)
 	if err != nil {
-		http.Error(w, err.Error(), http.StatusInternalServerError)
-		return
-	}
-	if username == nil {
+		// May have some side effects but let us ignore actual errors for now
+		// as all of them for now are due to invalid session anyway
 		w.WriteHeader(http.StatusUnauthorized)
-		return
-	}
-
-	user, err := query.FindUserByUsername(ctx, username.(string))
-	if err != nil {
-		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
 	}
 

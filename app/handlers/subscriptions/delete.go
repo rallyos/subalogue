@@ -5,35 +5,25 @@ import (
 	"net/http"
 	"strconv"
 	"subalogue/db"
-	"subalogue/session"
+	"subalogue/helpers"
 
 	"github.com/gorilla/mux"
 )
 
 func Delete(w http.ResponseWriter, r *http.Request) {
-	w.Header().Set("Content-Type", "application/json")
+	vars := mux.Vars(r)
 	ctx := context.Background()
 	query := db.GetQuery()
-
-	vars := mux.Vars(r)
-	subscriptionID, err := strconv.ParseInt(vars["id"], 10, 32)
-
-	//TODO: Validate
 	var subscriptionParams db.DeleteSubscriptionParams
 
-	username, err := session.Get(r, "username")
-	if err != nil {
-		http.Error(w, err.Error(), http.StatusInternalServerError)
-		return
-	}
-	user, err := query.FindUserByUsername(ctx, username.(string))
-	if err != nil {
-		http.Error(w, err.Error(), http.StatusInternalServerError)
-		return
-	}
+	w.Header().Set("Content-Type", "application/json")
+	subscriptionID, err := strconv.ParseInt(vars["id"], 10, 32)
 
+	user, err := helpers.GetSessionUser(r)
 	if err != nil {
-		w.WriteHeader(http.StatusBadRequest)
+		// May have some side effects but let us ignore actual errors for now
+		// as all of them for now are due to invalid session anyway
+		w.WriteHeader(http.StatusUnauthorized)
 		return
 	}
 

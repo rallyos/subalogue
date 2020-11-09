@@ -4,15 +4,16 @@ import (
 	"context"
 	"encoding/json"
 	"net/http"
+	"subalogue/app/validators"
 	"subalogue/db"
-	"subalogue/session"
+	"subalogue/helpers"
 )
 
 func Create(w http.ResponseWriter, r *http.Request) {
-	if r.Method == "OPTIONS" {
-		w.WriteHeader(http.StatusOK)
-		return
-	}
+	// if r.Method == "OPTIONS" {
+	// 	w.WriteHeader(http.StatusOK)
+	// 	return
+	// }
 	w.Header().Set("Content-Type", "application/json")
 	ctx := context.Background()
 	query := db.GetQuery()
@@ -21,41 +22,31 @@ func Create(w http.ResponseWriter, r *http.Request) {
 	// https://github.com/gorilla/schema If problems arise
 	var subscriptionParams db.CreateSubscriptionParams
 
-	username, err := session.Get(r, "username")
+	user, err := helpers.GetSessionUser(r)
 	if err != nil {
-		http.Error(w, err.Error(), http.StatusInternalServerError)
-		return
-	}
-
-	user, err := query.FindUserByUsername(ctx, username.(string))
-	if err != nil {
-		http.Error(w, err.Error(), http.StatusInternalServerError)
+		// May have some side effects but let us ignore actual errors for now
+		// as all of them for now are due to invalid session anyway
+		w.WriteHeader(http.StatusUnauthorized)
 		return
 	}
 
 	decoder := json.NewDecoder(r.Body)
 	decoder.Decode(&subscriptionParams)
 
-	if subscriptionParams.Name == "" {
-		errMap := map[string]string{
-			"name": "Name should not be empty.",
-		}
-		w.WriteHeader(http.StatusBadRequest)
-		json.NewEncoder(w).Encode(errMap)
-		return
-	}
+	// Validator should accept the generalized Subscription struct
+	valid, paramErrors := validators.ValidateSubscription(
+		db.Subscription{
+			Name:  subscriptionParams.Name,
+			Url:   subscriptionParams.Url,
+			Price: subscriptionParams.Price})
 
-	if subscriptionParams.Url == "" {
-		errMap := map[string]string{
-			"url": "Url should not be empty.",
-		}
+	if valid == false {
 		w.WriteHeader(http.StatusBadRequest)
-		json.NewEncoder(w).Encode(errMap)
+		json.NewEncoder(w).Encode(paramErrors)
 		return
 	}
 
 	subscriptionParams.UserID = user.ID
-
 	createdSub, err := query.CreateSubscription(ctx, subscriptionParams)
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
