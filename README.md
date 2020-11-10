@@ -27,11 +27,8 @@
 If you are interested in using Subalogue on your machine instead of the hosted version, there is a straighforward, although not polished way.  
 Subalogue uses auth0 for authentication, so at this point that is still a requirement to run the app locally. At future point this will be omitted to make things easy.
 
-## How To Contribute
-
-
 #### Config
-Bring your own .env,development file with the following environment variables set:  
+Bring your own .env.development file to the project root folder with the following environment variables set:  
 ```
 DATABASE_URL
 SESSION_KEY
@@ -42,7 +39,8 @@ AUTH0_CALLBACK_URL
 ```
 
 ### Run the server
-Build and run the docker containers, the most friendly way is through `docker-compose up`
+Build and run the docker containers, the most friendly way is through `docker-compose up`  
+The web container runs [Reflex](https://github.com/cespare/reflex) on startup, so the binary will be rebuilt and started again, on every file change.
 
 #### Development
 ##### Database changes
@@ -54,7 +52,7 @@ To create new migration, run the migrate container with entrypoint override:
 
 ##### Apply the migrations
 Most of the times, a single `docker-compose run migrate` is sufficient.  
+There are some specifics that are best explained in their [README](https://github.com/golang-migrate/migrate/blob/master/GETTING_STARTED.md)
 
-If a manual change is needed, you need to override the entrypoint command and provide a database url:  
-`docker-compose run --entrypoint="migrate -database ${DATABASE_URL} -path /migrations up" migrate`
-
+## How To Contribute
+If you are interested, thank you. It's important to note that I'm not a Go expert and this is a pet project on which I still learn. With that said - if for some reason you've found this repo, this is still very much in active development, which I prefer to do alone until all intended features are done and polished.
