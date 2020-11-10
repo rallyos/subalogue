@@ -38,19 +38,22 @@ AUTH0_CLIENT_SECRET
 AUTH0_CALLBACK_URL
 ```
 
-### Run the server
+#### Run the server
 Build and run the docker containers, the most friendly way is through `docker-compose up`  
 The web container runs [Reflex](https://github.com/cespare/reflex) on startup, so the binary will be rebuilt and started again, on every file change.
 
-#### Development
-##### Database changes
+#### Check out the client
+The frontend is built with Vue, [check it out here](https://github.com/shifting-photons/subalogue_client).
+
+### Development
+#### Database changes
 [Migrate](https://github.com/golang-migrate/migrate) Is used to create migrations for the DB.  
 
-##### Create a migration
+#### Create a migration
 To create new migration, run the migrate container with entrypoint override:  
 `docker-compose run --entrypoint="migrate create -ext sql -dir /migrations -seq {name}" migrate`
 
-##### Apply the migrations
+#### Apply the migrations
 Most of the times, a single `docker-compose run migrate` is sufficient.  
 There are some specifics that are best explained in their [README](https://github.com/golang-migrate/migrate/blob/master/GETTING_STARTED.md)
 
