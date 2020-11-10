@@ -5,8 +5,8 @@
 ---  
 
 <p align="center">
-  The API server side of https://subalogue.shifting-photons.dev</br>
-  <strong>A nice welcoming first sentence hoes here.</strong></br>
+  <strong>Manage your subscriptions with ease.</strong></br>
+  The API server side and main repo behind https://subalogue.shifting-photons.dev</br>
   <img src="https://img.shields.io/badge/version-0.1.0-brightgreen" align="center"/></br>
 </p>
 
@@ -23,12 +23,15 @@
   
   
 ## How To Use
+### Run It Locally
+If you are interested in using Subalogue on your machine instead of the hosted version, there is a straighforward, although not polished way.  
+Subalogue uses auth0 for authentication, so at this point that is still a requirement to run the app locally. At future point this will be omitted to make things easy.
 
 ## How To Contribute
 
 
-### Config
-You'll need an .env.{test,development} files with the following environment variables set:  
+#### Config
+Bring your own .env,development file with the following environment variables set:  
 ```
 DATABASE_URL
 SESSION_KEY
@@ -39,18 +42,18 @@ AUTH0_CALLBACK_URL
 ```
 
 ### Run the server
-Build and run the docker containers, the most friendly way is through:  
-`docker-compose up`
+Build and run the docker containers, the most friendly way is through `docker-compose up`
 
-### Migrations
+#### Development
+##### Database changes
+[Migrate](https://github.com/golang-migrate/migrate) Is used to create migrations for the DB.  
 
-##### Create migration
-
-Run the migrate container with entrypoint override:  
+##### Create a migration
+To create new migration, run the migrate container with entrypoint override:  
 `docker-compose run --entrypoint="migrate create -ext sql -dir /migrations -seq {name}" migrate`
 
 ##### Apply the migrations
-Most of the times, a single `docker-compose run migrate` is sufficient.
+Most of the times, a single `docker-compose run migrate` is sufficient.  
 
 If a manual change is needed, you need to override the entrypoint command and provide a database url:  
 `docker-compose run --entrypoint="migrate -database ${DATABASE_URL} -path /migrations up" migrate`
