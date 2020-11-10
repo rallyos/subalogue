@@ -58,4 +58,5 @@ Most of the times, a single `docker-compose run migrate` is sufficient.
 There are some specifics that are best explained in their [README](https://github.com/golang-migrate/migrate/blob/master/GETTING_STARTED.md)
 
 ## How To Contribute
-If you are interested, thank you. It's important to note that I'm not a Go expert and this is a pet project on which I still learn. With that said - if for some reason you've found this repo, this is still very much in active development, which I prefer to do alone until all intended features are done and polished.
+If you are interested, thank you.  
+It's important to note that I'm not a Go expert and this is a pet project on which I still learn. With that said - if for some reason you've found this repo, this is still very much in active development, which I prefer to do alone until all intended features are done and polished.
