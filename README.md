@@ -25,7 +25,7 @@
 ## How To Use
 ### Run It Locally
 If you are interested in using Subalogue on your machine instead of the hosted version, there is a straighforward, although not polished way.  
-Subalogue uses auth0 for authentication, so at this point that is still a requirement to run the app locally. At future point this will be omitted to make things easy.
+Subalogue uses [auth0](https://auth0.com/) for authentication, so at this point that is still a requirement to run the app locally. At future point this will be omitted to make things easy.
 
 #### Config
 Bring your own .env.development file to the project root folder with the following environment variables set:  
@@ -40,7 +40,7 @@ AUTH0_CALLBACK_URL
 
 #### Run the server
 Build and run the docker containers, the most friendly way is through `docker-compose up`  
-The web container runs [Reflex](https://github.com/cespare/reflex) on startup, so the binary will be rebuilt and started again, on every file change.
+The web container runs [Reflex](https://github.com/cespare/reflex) on startup, so the binary will be rebuilt and started again on every file change.
 
 #### Check out the client
 The frontend is built with Vue, [check it out here](https://github.com/shifting-photons/subalogue_client).
