@@ -1,5 +1,5 @@
 <p align="center">
-  <img src="logo.png" width="400" height="100"/>
+  <a href="https://subalogue.shifting-photons.dev"><img src="logo.png" width="400" height="100"/></a>
 </p>
 
 ---  
