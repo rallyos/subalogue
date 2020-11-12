@@ -15,9 +15,8 @@ services:
       - "api.network"
   api:
     image: shiftingphotons/subalogue:latest
-    build: .
-    volumes:
-      - .:/go/src/app
+    env_file:
+      - .env.production
     depends_on:
       - db
     networks:
@@ -30,9 +29,8 @@ services:
       - app-volume:/app/dist
   db:
     image: postgres:13
-    volumes:
-      - ./docker-entrypoint-initdb.d:/docker-entrypoint-initdb.d
-      - ./tmp/db:/var/lib/postgresql/data
+    env_file:
+      - .env.production
     networks:
       - "api.network"
 

@@ -2,12 +2,13 @@ package auth
 
 import (
 	"context"
-	"github.com/coreos/go-oidc"
 	"log"
 	"net/http"
 	"os"
 	"subalogue/helpers"
 	"subalogue/session"
+
+	"github.com/coreos/go-oidc"
 )
 
 func Callback(w http.ResponseWriter, r *http.Request) {
@@ -74,5 +75,5 @@ func Callback(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	http.Redirect(w, r, "http://localhost:8080/app", http.StatusSeeOther)
+	http.Redirect(w, r, "http://localhost/app", http.StatusSeeOther)
 }
