@@ -22,6 +22,8 @@ services:
       - db
     networks:
       - "api.network"
+    volumes:
+      - migrations:/db/migrations
   app:
     image: shiftingphotons/subalogue_client:latest
     networks:
@@ -35,8 +37,18 @@ services:
       - ./tmp/db:/var/lib/postgresql/data
     networks:
       - "api.network"
+  migrate:
+    image: migrate/migrate
+    command: ["-database", "${DATABASE_URL}", "-path", "/migrations", "up"]
+    volumes:
+      - migrations:/migrations
+    depends_on:
+      - db
+    networks:
+      - "api.network"
 
 volumes:
+  migrations:
   app-volume:
 
 networks:

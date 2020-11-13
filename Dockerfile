@@ -11,5 +11,4 @@ RUN go get github.com/cespare/reflex
 EXPOSE 8000
 ENV SUBALOGUE_ENV=development
 
-CMD ./migrate.sh
 CMD reflex -r '\.go$' -s -- sh -c 'go build . && ./subalogue'

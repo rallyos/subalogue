@@ -75,5 +75,5 @@ func Callback(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	http.Redirect(w, r, "http://localhost/app", http.StatusSeeOther)
+	http.Redirect(w, r, "/app", http.StatusSeeOther)
 }
