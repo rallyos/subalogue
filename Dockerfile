@@ -9,5 +9,3 @@ RUN go install -v ./...
 RUN go get github.com/cespare/reflex
 
 EXPOSE 8000
-
-CMD reflex -r '\.go$' -s -- sh -c 'go build . && ./subalogue'

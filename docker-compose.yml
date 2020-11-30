@@ -1,15 +1,12 @@
 version: "3.8"
 
-volumes:
-  migrations:
-  app-volume:
-
 networks:
   subalogue.network:
 
 services:
   api:
     build: .
+    command: reflex -r '\.go$$' -s -- sh -c 'go build . && ./subalogue'
     ports:
       - "8000:8000"
     environment:
@@ -20,8 +17,6 @@ services:
       - db
     networks:
       - "subalogue.network"
-    volumes:
-      - migrations:/db/migrations
   db:
     image: postgres:13
     volumes:
