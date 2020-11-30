@@ -75,5 +75,7 @@ func Callback(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	http.Redirect(w, r, "/app", http.StatusSeeOther)
+	redirectUrl := os.Getenv("REDIRECT_APP_URL")
+
+	http.Redirect(w, r, redirectUrl, http.StatusSeeOther)
 }

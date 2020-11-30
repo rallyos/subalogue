@@ -3,6 +3,7 @@
 *.swa
 
 .env.development
+.env.production
 
 /tmp
 subalogue

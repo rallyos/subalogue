@@ -1,55 +1,31 @@
 version: "3.8"
-services:
-  nginx:
-    image: nginx
-    build: ./nginx/
-    restart: always
-    ports:
-      - "80:80"
-    volumes:
-      - app-volume:/etc/nginx/html/
-    depends_on:
-      - api
-      - app
-    networks:
-      - "api.network"
-  api:
-    image: shiftingphotons/subalogue:latest
-    build: .
-    volumes:
-      - .:/go/src/app
-    depends_on:
-      - db
-    networks:
-      - "api.network"
-    volumes:
-      - migrations:/db/migrations
-  app:
-    image: shiftingphotons/subalogue_client:latest
-    networks:
-      - "api.network"
-    volumes:
-      - app-volume:/app/dist
-  db:
-    image: postgres:13
-    volumes:
-      - ./docker-entrypoint-initdb.d:/docker-entrypoint-initdb.d
-      - ./tmp/db:/var/lib/postgresql/data
-    networks:
-      - "api.network"
-  migrate:
-    image: migrate/migrate
-    command: ["-database", "${DATABASE_URL}", "-path", "/migrations", "up"]
-    volumes:
-      - migrations:/migrations
-    depends_on:
-      - db
-    networks:
-      - "api.network"
 
 volumes:
   migrations:
   app-volume:
 
 networks:
-  api.network:
+  subalogue.network:
+
+services:
+  api:
+    build: .
+    ports:
+      - "8000:8000"
+    environment:
+      - SUBALOGUE_ENV=development
+    volumes:
+      - .:/go/src/app
+    depends_on:
+      - db
+    networks:
+      - "subalogue.network"
+    volumes:
+      - migrations:/db/migrations
+  db:
+    image: postgres:13
+    volumes:
+      - ./docker-entrypoint-initdb.d:/docker-entrypoint-initdb.d
+      - ./tmp/db:/var/lib/postgresql/data
+    networks:
+      - "subalogue.network"

@@ -1,0 +1,43 @@
+version: "3.8"
+
+volumes:
+  api_migrations:
+  dist
+
+networks:
+  net:
+
+secrets:
+  env.production:
+    external: true
+
+services:
+  api:
+    image: shiftingphotons/subalogue:latest
+    secrets:
+      - source: env.production
+        target: /usr/src/app/.env.production
+    deploy:
+      replicas: 2
+    environment:
+      - SUBALOGUE_ENV=production
+    networks:
+      - "net"
+    volumes:
+      - api_migrations:/go/src/app/db/migrations
+  app:
+    image: shiftingphotons/subalogue_client:latest
+    deploy:
+      replicas: 1
+    networks:
+      - "net"
+    volumes:
+      - dist:/app/dist
+  db:
+    image: postgres:13
+    deploy:
+      replicas: 1
+    networks:
+      - "net"
+    env_file:
+      - .env.production

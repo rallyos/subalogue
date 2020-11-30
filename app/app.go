@@ -1,6 +1,7 @@
 package app
 
 import (
+	"fmt"
 	"log"
 	"net/http"
 	"os"
@@ -28,7 +29,12 @@ func (s *Server) Initialize() {
 }
 
 func setEnv() {
-	err := godotenv.Load(".env." + os.Getenv("SUBALOGUE_ENV"))
+	wd, _ := os.Getwd()
+	fmt.Println(wd)
+	chep
+	envPath := fmt.Sprintf("%s/%s", wd, ".env."+os.Getenv("SUBALOGUE_ENV"))
+	log.Println(envPath)
+	err := godotenv.Load(envPath)
 	if err != nil {
 		log.Println(err)
 	}
