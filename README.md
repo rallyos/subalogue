@@ -1,5 +1,5 @@
 <p align="center">
-  <a href="https://subalogue.shifting-photons.dev"><img src="logo.png" width="400" height="100"/></a>
+  <a href="https://subalogue.shiftingphotons.dev"><img src="logo.png" width="400" height="100"/></a>
 </p>
 
 ---  
@@ -53,7 +53,7 @@ docker-compose exec api bash -c "migrate -database ${DATABASE_URL} -path db/migr
 ```
 
 #### Check out the client
-The frontend is built with Vue. [Check out the app](https://github.com/shifting-photons/subalogue_client).
+The frontend is built with Vue. [Check out the app](https://github.com/shiftingphotons/subalogue_client).
 
 ## How To Contribute
 If you are interested, thank you.  
