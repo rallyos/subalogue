@@ -1,29 +1,26 @@
 version: "3.8"
+
+networks:
+  subalogue.network:
+
 services:
-  db:
-    image: postgres:13
-    ports:
-      - "5432:5432"
-    volumes:
-      - ./docker-entrypoint-initdb.d:/docker-entrypoint-initdb.d
-      - ./tmp/db:/var/lib/postgresql/data
-    environment:
-      - POSTGRES_USER=subalogue
-      - POSTGRES_PASSWORD=subalogue
-      - POSTGRES_DB=subalogue_development
-  web:
+  api:
     build: .
+    command: reflex -r '\.go$$' -s -- sh -c 'go build . && ./subalogue'
     ports:
       - "8000:8000"
+    environment:
+      - SUBALOGUE_ENV=development
     volumes:
       - .:/go/src/app
     depends_on:
       - db
-  migrate:
-    image: migrate/migrate
-    command: ["-database", "${DATABASE_URL}", "-path", "/migrations", "up"]
+    networks:
+      - "subalogue.network"
+  db:
+    image: postgres:13
     volumes:
-      - $PWD/db/migrations:/migrations
-    depends_on:
-      - db
-
+      - ./docker-entrypoint-initdb.d:/docker-entrypoint-initdb.d
+      - ./tmp/db:/var/lib/postgresql/data
+    networks:
+      - "subalogue.network"

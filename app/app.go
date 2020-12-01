@@ -37,6 +37,5 @@ func setEnv() {
 func (s *Server) Run() {
 	s.Router.Use(middlewares.LoggingMiddleware)
 	s.Router.Use(middlewares.CORSMiddleware)
-	// TODO addr param
 	log.Fatal(http.ListenAndServe(":8000", s.Router))
 }

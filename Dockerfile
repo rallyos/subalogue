@@ -1,4 +1,4 @@
-FROM golang:1.14
+FROM golang:1.15
 
 WORKDIR /go/src/app
 COPY . .
@@ -9,6 +9,3 @@ RUN go install -v ./...
 RUN go get github.com/cespare/reflex
 
 EXPOSE 8000
-ENV SUBALOGUE_ENV=development
-
-CMD reflex -r '\.go$' -s -- sh -c 'go build . && ./subalogue'
