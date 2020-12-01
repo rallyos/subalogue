@@ -40,7 +40,10 @@ REDIRECT_APP_URL=URL_TO_THE_CLIENT_APP
 ```
 
 #### Run the server
-Build and run the docker containers, the most friendly way is through `docker-compose up`  
+Build and run the docker containers, the most friendly way is through:
+```
+docker-compose up
+```  
 The web container runs [Reflex](https://github.com/cespare/reflex) on startup, so the binary will be rebuilt and started again on every file change.
 
 #### Check out the client
