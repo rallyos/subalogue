@@ -25,7 +25,8 @@
 ### Run It Locally
 If you are interested in using Subalogue on your machine instead of the [hosted version](https://subalogue.shifting-photons.dev), there is a straighforward, although not polished way.  
 
-Subalogue uses [auth0](https://auth0.com/) for authentication, so at this point that is still a requirement to run the app locally. At future point this will be omitted to make things easy.
+#### Prerequisites
+Subalogue uses [auth0](https://auth0.com/) for authentication, so at this point that is still a requirement to run the app locally. In the future this will be omitted to make things easy.
 
 #### Config
 Bring your own .env.development file to the project root folder with the following environment variables set:  
