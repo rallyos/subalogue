@@ -53,7 +53,7 @@ docker-compose exec api bash -c "migrate -database ${DATABASE_URL} -path db/migr
 ```
 
 #### Check out the client
-The frontend is built with Vue. [Check out the app](https://github.com/shiftingphotons/subalogue_client).
+The frontend is built with Vue. [Check out the app](https://github.com/shiftingphotons/subalogue-client).
 
 ## How To Contribute
 If you are interested, thank you.  
