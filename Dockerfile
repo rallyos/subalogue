@@ -1,5 +1,7 @@
 FROM golang:1.15
 
+RUN go get -tags 'postgres' -u github.com/golang-migrate/migrate/cmd/migrate
+
 WORKDIR /go/src/app
 COPY . .
 
