@@ -45,17 +45,14 @@ Build and run the docker containers, the most friendly way is through:
 docker-compose up
 ```  
 The web container runs [Reflex](https://github.com/cespare/reflex) on startup, so the binary will be rebuilt and started again on every file change.
+#### Apply the migrations
+A better way for this is still in TODO.  
+```
+docker-compose exec api bash -c "migrate -database ${DATABASE_URL} -path db/migrations up
+```
 
 #### Check out the client
 The frontend is built with Vue. [Check out the app](https://github.com/shifting-photons/subalogue_client).
-
-### Development
-#### Database changes
-[Migrate](https://github.com/golang-migrate/migrate) Is used to create migrations for the DB.  
-
-#### Apply the migrations
-Still in TODO.  
-There are some specifics that are best explained in their [README](https://github.com/golang-migrate/migrate/blob/master/GETTING_STARTED.md)
 
 ## How To Contribute
 If you are interested, thank you.  
