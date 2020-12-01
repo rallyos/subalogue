@@ -5,7 +5,7 @@
 ---  
 
 <p align="center">
-  A subscription manager aiming to offer a better visibility of your personal subscriptions.</br></br>
+  ✨ A subscription manager aiming to offer a better visibility of your personal subscriptions ✨</br></br>
   <img src="https://img.shields.io/github/workflow/status/shiftingphotons/subalogue/Test"/></br>
 </p>
 
