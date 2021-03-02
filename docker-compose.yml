@@ -24,3 +24,7 @@ services:
       - ./tmp/db:/var/lib/postgresql/data
     networks:
       - "subalogue.network"
+    environment:
+      - POSTGRES_USER=subalogue
+      - POSTGRES_PASSWORD=subalogue
+      - POSTGRES_DB=subalogue_development

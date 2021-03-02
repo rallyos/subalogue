@@ -5,22 +5,25 @@ package db
 
 import (
 	"context"
+	"time"
 )
 
 const createSubscription = `-- name: CreateSubscription :one
 INSERT INTO subscriptions (
-    user_id, name, url, price
+    user_id, name, url, price, recurring, billing_date
 ) VALUES (
-    $1, $2, $3, $4
+    $1, $2, $3, $4, $5, $6
 )
-RETURNING id, name, user_id, price, url
+RETURNING id, name, user_id, price, url, recurring, billing_date
 `
 
 type CreateSubscriptionParams struct {
-	UserID int32  `json:"user_id"`
-	Name   string `json:"name"`
-	Url    string `json:"url"`
-	Price  int32  `json:"price"`
+	UserID      int32     `json:"user_id"`
+	Name        string    `json:"name"`
+	Url         string    `json:"url"`
+	Price       int32     `json:"price"`
+	Recurring   Period    `json:"recurring"`
+	BillingDate time.Time `json:"billing_date"`
 }
 
 func (q *Queries) CreateSubscription(ctx context.Context, arg CreateSubscriptionParams) (Subscription, error) {
@@ -29,6 +32,8 @@ func (q *Queries) CreateSubscription(ctx context.Context, arg CreateSubscription
 		arg.Name,
 		arg.Url,
 		arg.Price,
+		arg.Recurring,
+		arg.BillingDate,
 	)
 	var i Subscription
 	err := row.Scan(
@@ -37,6 +42,8 @@ func (q *Queries) CreateSubscription(ctx context.Context, arg CreateSubscription
 		&i.UserID,
 		&i.Price,
 		&i.Url,
+		&i.Recurring,
+		&i.BillingDate,
 	)
 	return i, err
 }
@@ -53,7 +60,7 @@ func (q *Queries) CreateUser(ctx context.Context, username string) (User, error)
 }
 
 const deleteSubscription = `-- name: DeleteSubscription :one
-DELETE FROM subscriptions WHERE user_id = $1 AND id = $2 RETURNING id, name, user_id, price, url
+DELETE FROM subscriptions WHERE user_id = $1 AND id = $2 RETURNING id, name, user_id, price, url, recurring, billing_date
 `
 
 type DeleteSubscriptionParams struct {
@@ -70,6 +77,8 @@ func (q *Queries) DeleteSubscription(ctx context.Context, arg DeleteSubscription
 		&i.UserID,
 		&i.Price,
 		&i.Url,
+		&i.Recurring,
+		&i.BillingDate,
 	)
 	return i, err
 }
@@ -86,7 +95,7 @@ func (q *Queries) FindUserByUsername(ctx context.Context, username string) (User
 }
 
 const getSubscription = `-- name: GetSubscription :one
-SELECT id, name, user_id, price, url FROM subscriptions where id = $1 AND user_id = $2
+SELECT id, name, user_id, price, url, recurring, billing_date FROM subscriptions where id = $1 AND user_id = $2
 `
 
 type GetSubscriptionParams struct {
@@ -103,12 +112,14 @@ func (q *Queries) GetSubscription(ctx context.Context, arg GetSubscriptionParams
 		&i.UserID,
 		&i.Price,
 		&i.Url,
+		&i.Recurring,
+		&i.BillingDate,
 	)
 	return i, err
 }
 
 const listSubscriptions = `-- name: ListSubscriptions :many
-SELECT id, name, user_id, price, url FROM subscriptions where user_id = $1
+SELECT id, name, user_id, price, url, recurring, billing_date FROM subscriptions where user_id = $1
 `
 
 func (q *Queries) ListSubscriptions(ctx context.Context, userID int32) ([]Subscription, error) {
@@ -126,6 +137,8 @@ func (q *Queries) ListSubscriptions(ctx context.Context, userID int32) ([]Subscr
 			&i.UserID,
 			&i.Price,
 			&i.Url,
+			&i.Recurring,
+			&i.BillingDate,
 		); err != nil {
 			return nil, err
 		}
@@ -142,16 +155,18 @@ func (q *Queries) ListSubscriptions(ctx context.Context, userID int32) ([]Subscr
 
 const updateSubscription = `-- name: UpdateSubscription :one
 UPDATE subscriptions
-SET name = $2, url=$3, price=$4
-WHERE user_id = $1 AND id = $5 RETURNING id, name, user_id, price, url
+SET name = $2, url=$3, price=$4, recurring=$5, billing_date=$6
+WHERE user_id = $1 AND id = $7 RETURNING id, name, user_id, price, url, recurring, billing_date
 `
 
 type UpdateSubscriptionParams struct {
-	UserID int32  `json:"user_id"`
-	Name   string `json:"name"`
-	Url    string `json:"url"`
-	Price  int32  `json:"price"`
-	ID     int32  `json:"id"`
+	UserID      int32     `json:"user_id"`
+	Name        string    `json:"name"`
+	Url         string    `json:"url"`
+	Price       int32     `json:"price"`
+	Recurring   Period    `json:"recurring"`
+	BillingDate time.Time `json:"billing_date"`
+	ID          int32     `json:"id"`
 }
 
 func (q *Queries) UpdateSubscription(ctx context.Context, arg UpdateSubscriptionParams) (Subscription, error) {
@@ -160,6 +175,8 @@ func (q *Queries) UpdateSubscription(ctx context.Context, arg UpdateSubscription
 		arg.Name,
 		arg.Url,
 		arg.Price,
+		arg.Recurring,
+		arg.BillingDate,
 		arg.ID,
 	)
 	var i Subscription
@@ -169,6 +186,8 @@ func (q *Queries) UpdateSubscription(ctx context.Context, arg UpdateSubscription
 		&i.UserID,
 		&i.Price,
 		&i.Url,
+		&i.Recurring,
+		&i.BillingDate,
 	)
 	return i, err
 }

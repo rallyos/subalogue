@@ -39,9 +39,12 @@ func Update(w http.ResponseWriter, r *http.Request) {
 
 	valid, paramErrors := validators.ValidateSubscription(
 		db.Subscription{
-			Name:  subscriptionParams.Name,
-			Url:   subscriptionParams.Url,
-			Price: subscriptionParams.Price})
+			Name:        subscriptionParams.Name,
+			Url:         subscriptionParams.Url,
+			Price:       subscriptionParams.Price,
+			Recurring:   subscriptionParams.Recurring,
+			BillingDate: subscriptionParams.BillingDate,
+		})
 
 	if !valid {
 		w.WriteHeader(http.StatusBadRequest)
