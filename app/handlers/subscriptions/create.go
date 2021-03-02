@@ -29,15 +29,21 @@ func Create(w http.ResponseWriter, r *http.Request) {
 	decoder := json.NewDecoder(r.Body)
 	err = decoder.Decode(&subscriptionParams)
 	if err != nil {
-		log.Fatal(err)
+		http.Error(w, "", http.StatusBadRequest)
+		log.Println(err.Error())
+		return
 	}
 
 	// Validator should accept the generalized Subscription struct
+	// TODO: Shouldn't we check subscriptionParams or the request body?
 	valid, paramErrors := validators.ValidateSubscription(
 		db.Subscription{
-			Name:  subscriptionParams.Name,
-			Url:   subscriptionParams.Url,
-			Price: subscriptionParams.Price})
+			Name:        subscriptionParams.Name,
+			Url:         subscriptionParams.Url,
+			Price:       subscriptionParams.Price,
+			Recurring:   subscriptionParams.Recurring,
+			BillingDate: subscriptionParams.BillingDate,
+		})
 
 	if !valid {
 		w.WriteHeader(http.StatusBadRequest)

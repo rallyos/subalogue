@@ -2,14 +2,38 @@
 
 package db
 
-import ()
+import (
+	"fmt"
+	"time"
+)
+
+type Period string
+
+const (
+	PeriodMonthly Period = "monthly"
+	PeriodYearly  Period = "yearly"
+)
+
+func (e *Period) Scan(src interface{}) error {
+	switch s := src.(type) {
+	case []byte:
+		*e = Period(s)
+	case string:
+		*e = Period(s)
+	default:
+		return fmt.Errorf("unsupported scan type for Period: %T", src)
+	}
+	return nil
+}
 
 type Subscription struct {
-	ID     int32  `json:"id"`
-	Name   string `json:"name"`
-	UserID int32  `json:"user_id"`
-	Price  int32  `json:"price"`
-	Url    string `json:"url"`
+	ID          int32     `json:"id"`
+	Name        string    `json:"name"`
+	UserID      int32     `json:"user_id"`
+	Price       int32     `json:"price"`
+	Url         string    `json:"url"`
+	Recurring   Period    `json:"recurring"`
+	BillingDate time.Time `json:"billing_date"`
 }
 
 type User struct {
