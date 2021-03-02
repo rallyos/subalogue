@@ -118,7 +118,7 @@ func TestListSubscriptions(t *testing.T) {
 func TestCreateSubscriptions(t *testing.T) {
 	is := is.New(t)
 
-	jsonStr := []byte(`{"name": "Brain.fm", "url": "https://brain.fm", "price": 299}`)
+	jsonStr := []byte(`{"name": "Brain.fm", "url": "https://brain.fm", "price": 299, "billing_date": "2021-03-01T00:00:00Z", "recurring": "monthly"}`)
 	req := httptest.NewRequest("POST", "/api/v1/me/subscriptions", bytes.NewBuffer(jsonStr))
 	setSessionKey("username", username, req, t)
 
@@ -134,7 +134,7 @@ func TestCreateSubscriptions(t *testing.T) {
 func TestUpdateSubscriptions(t *testing.T) {
 	is := is.New(t)
 
-	jsonStr := []byte(`{"name": "Brain.fm", "url": "https://brain.fm", "price": 399}`)
+	jsonStr := []byte(`{"name": "Brain.fm", "url": "https://brain.fm", "price": 399, "billing_date": "2021-03-01T00:00:00Z", "recurring": "yearly"}`)
 	req := httptest.NewRequest("PUT", "/api/v1/me/subscriptions/1", bytes.NewBuffer(jsonStr))
 	setSessionKey("username", username, req, t)
 
