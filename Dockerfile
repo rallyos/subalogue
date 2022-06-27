@@ -1,13 +1,11 @@
-FROM golang:1.15
+FROM golang:1.18
 
-RUN go get -tags 'postgres' -u github.com/golang-migrate/migrate/cmd/migrate
-
-WORKDIR /go/src/app
+WORKDIR /app
 COPY . .
 
 RUN go get -d -v ./...
 RUN go install -v ./...
 
-RUN go get github.com/cespare/reflex
+RUN go install github.com/cespare/reflex@latest
 
-EXPOSE 8000
+EXPOSE 3000
