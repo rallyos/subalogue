@@ -8,11 +8,11 @@ services:
     build: .
     command: reflex -r '\.go$$' -s -- sh -c 'go build . && ./subalogue'
     ports:
-      - "8000:8000"
+      - "3000:3000"
     environment:
       - SUBALOGUE_ENV=development
     volumes:
-      - .:/go/src/app
+      - .:/app
     depends_on:
       - db
     networks:
@@ -22,6 +22,8 @@ services:
     volumes:
       - ./docker-entrypoint-initdb.d:/docker-entrypoint-initdb.d
       - ./tmp/db:/var/lib/postgresql/data
+    ports:
+      - 5433:5423
     networks:
       - "subalogue.network"
     environment:
