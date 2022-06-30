@@ -9,6 +9,8 @@ services:
     command: reflex -r '\.go$$' -s -- sh -c 'go build . && ./subalogue'
     ports:
       - "3000:3000"
+    env_file:
+      - .env.development
     environment:
       - SUBALOGUE_ENV=development
     volumes:
