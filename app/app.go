@@ -28,9 +28,11 @@ func (s *Server) Initialize() {
 }
 
 func setEnv() {
-	err := godotenv.Load(".env." + os.Getenv("SUBALOGUE_ENV"))
+	// Hardcode root folder because there are issues with running the tests (expected behaviour in Go because of the working directory value when tests in other packages are run)
+	// We use containers so we have a guarantee that this path will always be correct
+	err := godotenv.Load("/app/.env." + os.Getenv("SUBALOGUE_ENV"))
 	if err != nil {
-		log.Println(err)
+		log.Fatal(err.Error())
 	}
 }
 
