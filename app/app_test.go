@@ -19,10 +19,14 @@ import (
 var server *Server
 var username string
 
+const sessKey string = "username"
+const firstSubURL string = "/api/v1/me/subscriptions/1"
+const subListURL string = "/api/v1/me/subscriptions"
+
 func init() {
 	t := testing.T{}
 
-	err := godotenv.Load("../.env.test")
+	err := godotenv.Load("/app/.env.test")
 	if err != nil {
 		t.Log(err)
 	}
@@ -41,7 +45,7 @@ func preSetup() {
 func migrateDB() {
 	t := testing.T{}
 
-	m, err := migrate.New("file://../db/migrations", os.Getenv("DATABASE_URL"))
+	m, err := migrate.New("file:///app/db/migrations", os.Getenv("DATABASE_URL"))
 	if err != nil {
 		t.Log(err)
 	}
@@ -64,14 +68,17 @@ func clearDB() {
 	}
 }
 
+const createUserQuery string = `INSERT INTO users(username) VALUES ('dmralev') RETURNING username`
+const createSubQuery string = `INSERT INTO subscriptions(name, url, price, username) VALUES ('Brilliant', 'https://brilliant.org', 5900, 'dmralev') RETURNING *`
+
 func populate() {
 	t := testing.T{}
 
-	userRow := server.DB.QueryRow(`INSERT INTO users(username) VALUES ('dmralev') RETURNING username`)
+	userRow := server.DB.QueryRow(createUserQuery)
 	if err := userRow.Scan(&username); err != nil {
 		t.Log(err)
 	}
-	subscriptionRow := server.DB.QueryRow(`INSERT INTO subscriptions(name, url, price, username) VALUES ('Brilliant', 'https://brilliant.org', 5900, 'dmralev') RETURNING *`)
+	subscriptionRow := server.DB.QueryRow(createSubQuery)
 	if err := subscriptionRow.Scan(&username); err != nil {
 		t.Log(err)
 	}
@@ -88,12 +95,12 @@ func setSessionKey(k, v string, req *http.Request, t *testing.T) {
 func TestPing(t *testing.T) {
 	is := is.New(t)
 
-	req := httptest.NewRequest("GET", "/ping", nil)
+	req := httptest.NewRequest(http.MethodGet, "/ping", nil)
 	w := httptest.NewRecorder()
 
 	server.Router.ServeHTTP(w, req)
 
-	expectedCode, expected_body := 200, "Pong"
+	expectedCode, expected_body := http.StatusOK, "Pong"
 	statusCode, body := w.Result().StatusCode, w.Body.String()
 
 	is.Equal(statusCode, expectedCode)
@@ -103,61 +110,57 @@ func TestPing(t *testing.T) {
 func TestListSubscriptions(t *testing.T) {
 	is := is.New(t)
 
-	req := httptest.NewRequest("GET", "/api/v1/me/subscriptions", nil)
-	setSessionKey("username", username, req, t)
+	req := httptest.NewRequest(http.MethodGet, subListURL, nil)
+	setSessionKey(sessKey, username, req, t)
 
 	w := httptest.NewRecorder()
 	server.Router.ServeHTTP(w, req)
 
-	expectedCode := 200
 	statusCode := w.Result().StatusCode
 
-	is.Equal(statusCode, expectedCode)
+	is.Equal(statusCode, http.StatusOK)
 }
 
 func TestCreateSubscriptions(t *testing.T) {
 	is := is.New(t)
 
 	jsonStr := []byte(`{"name": "Brain.fm", "url": "https://brain.fm", "price": 299, "billing_date": "2021-03-01T00:00:00Z", "recurring": "monthly"}`)
-	req := httptest.NewRequest("POST", "/api/v1/me/subscriptions", bytes.NewBuffer(jsonStr))
-	setSessionKey("username", username, req, t)
+	req := httptest.NewRequest(http.MethodPost, subListURL, bytes.NewBuffer(jsonStr))
+	setSessionKey(sessKey, username, req, t)
 
 	w := httptest.NewRecorder()
 	server.Router.ServeHTTP(w, req)
 
-	expectedCode := 201
 	statusCode := w.Result().StatusCode
 
-	is.Equal(statusCode, expectedCode)
+	is.Equal(statusCode, http.StatusCreated)
 }
 
 func TestUpdateSubscriptions(t *testing.T) {
 	is := is.New(t)
 
 	jsonStr := []byte(`{"name": "Brain.fm", "url": "https://brain.fm", "price": 399, "billing_date": "2021-03-01T00:00:00Z", "recurring": "yearly"}`)
-	req := httptest.NewRequest("PUT", "/api/v1/me/subscriptions/1", bytes.NewBuffer(jsonStr))
-	setSessionKey("username", username, req, t)
+	req := httptest.NewRequest(http.MethodPut, firstSubURL, bytes.NewBuffer(jsonStr))
+	setSessionKey(sessKey, username, req, t)
 
 	w := httptest.NewRecorder()
 	server.Router.ServeHTTP(w, req)
 
-	expectedCode := 200
 	statusCode := w.Result().StatusCode
 
-	is.Equal(statusCode, expectedCode)
+	is.Equal(statusCode, http.StatusOK)
 }
 
 func TestDeleteSubscriptions(t *testing.T) {
 	is := is.New(t)
 
-	req := httptest.NewRequest("DELETE", "/api/v1/me/subscriptions/1", nil)
-	setSessionKey("username", username, req, t)
+	req := httptest.NewRequest(http.MethodDelete, firstSubURL, nil)
+	setSessionKey(sessKey, username, req, t)
 
 	w := httptest.NewRecorder()
 	server.Router.ServeHTTP(w, req)
 
-	expectedCode := 204
 	statusCode := w.Result().StatusCode
 
-	is.Equal(statusCode, expectedCode)
+	is.Equal(statusCode, http.StatusNoContent)
 }
