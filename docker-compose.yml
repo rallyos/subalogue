@@ -32,3 +32,16 @@ services:
       - POSTGRES_USER=subalogue
       - POSTGRES_PASSWORD=subalogue
       - POSTGRES_DB=subalogue_development
+  test:
+    build: .
+    command: reflex -r '\.go$$' -s -- sh -c 'go test -v ./... -nocolor'
+    env_file:
+      - .env.test
+    environment:
+      - SUBALOGUE_ENV=test
+    volumes:
+      - .:/app
+    depends_on:
+      - db
+    networks:
+      - "subalogue.network"

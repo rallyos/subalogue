@@ -12,7 +12,6 @@ import (
 	"github.com/golang-migrate/migrate/v4"
 	_ "github.com/golang-migrate/migrate/v4/database/postgres"
 	_ "github.com/golang-migrate/migrate/v4/source/file"
-	"github.com/joho/godotenv"
 	"github.com/matryer/is"
 )
 
@@ -24,13 +23,6 @@ const firstSubURL string = "/api/v1/me/subscriptions/1"
 const subListURL string = "/api/v1/me/subscriptions"
 
 func init() {
-	t := testing.T{}
-
-	err := godotenv.Load("/app/.env.test")
-	if err != nil {
-		t.Log(err)
-	}
-
 	server = &Server{}
 	server.Initialize()
 	preSetup()
