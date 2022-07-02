@@ -16,7 +16,7 @@ jobs:
     - name: Set up Go 1.x
       uses: actions/setup-go@v2
       with:
-        go-version: ^1.13
+        go-version: ^1.18
       id: go
 
     - name: Check out code into the Go module directory
@@ -45,5 +45,5 @@ jobs:
         DATABASE_URL: postgres://subalogue:subalogue@localhost:5432/subalogue_test?sslmode=disable
         SESSION_KEY: test
         SUBALOGUE_ENV: test
-      run: go test -v ./app
+      run: go test -v ./... -nocolor
 
