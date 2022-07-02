@@ -37,15 +37,16 @@ func preSetup() {
 func migrateDB() {
 	t := testing.T{}
 
-	fmt.Println(os.Getenv("DATABASE_URL"))
+	t.Log(os.Getenv("DATABASE_URL"))
+	t.Log(os.Getwd())
 	m, err := migrate.New("file:///app/db/migrations", os.Getenv("DATABASE_URL"))
 	if err != nil {
-		t.Log(err)
+		t.Log(err.Error())
 	}
 
 	err = m.Up()
 	if err != nil {
-		t.Log(err)
+		t.Log(err.Error())
 	}
 }
 
