@@ -1,9 +1,10 @@
 package middlewares
 
 import (
-	"github.com/gorilla/handlers"
 	"net/http"
 	"os"
+
+	"github.com/gorilla/handlers"
 )
 
 func LoggingMiddleware(next http.Handler) http.Handler {
@@ -12,7 +13,7 @@ func LoggingMiddleware(next http.Handler) http.Handler {
 
 func CORSMiddleware(next http.Handler) http.Handler {
 	if os.Getenv("SUBALOGUE_ENV") == "development" {
-		origins := handlers.AllowedOrigins([]string{"http://localhost:8080"})
+		origins := handlers.AllowedOrigins([]string{"http://localhost:8000"})
 		methods := handlers.AllowedMethods([]string{http.MethodGet, http.MethodPost, http.MethodPut, http.MethodPatch, http.MethodDelete, http.MethodOptions})
 		headers := handlers.AllowedHeaders([]string{"Content-Type", "Cookie"})
 		creds := handlers.AllowCredentials()

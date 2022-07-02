@@ -5,13 +5,12 @@ import (
 	"net/http"
 	"os"
 
-	"github.com/joho/godotenv"
-
 	"database/sql"
 	"subalogue/app/middlewares"
 	"subalogue/db"
 
 	"github.com/gorilla/mux"
+	"github.com/joho/godotenv"
 )
 
 type Server struct {
@@ -27,15 +26,19 @@ func (s *Server) Initialize() {
 	s.routes()
 }
 
+// Needs rework soon
 func setEnv() {
-	err := godotenv.Load(".env." + os.Getenv("SUBALOGUE_ENV"))
-	if err != nil {
-		log.Println(err)
+	if os.Getenv("SUBALOGUE_ENV") == "production" {
+		err := godotenv.Load(".env.production")
+		if err != nil {
+			log.Fatal(err.Error())
+		}
+
 	}
 }
 
 func (s *Server) Run() {
 	s.Router.Use(middlewares.LoggingMiddleware)
 	s.Router.Use(middlewares.CORSMiddleware)
-	log.Fatal(http.ListenAndServe(":8000", s.Router))
+	log.Fatal(http.ListenAndServe(":3000", s.Router))
 }
