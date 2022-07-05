@@ -1,4 +1,4 @@
-module subalogue
+module github.com/shiftingphotons/subalogue
 
 go 1.18
 

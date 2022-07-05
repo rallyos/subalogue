@@ -25,7 +25,7 @@ services:
       - ./docker-entrypoint-initdb.d:/docker-entrypoint-initdb.d
       - ./tmp/db:/var/lib/postgresql/data
     ports:
-      - 5433:5423
+      - 5433:5432
     networks:
       - "subalogue.network"
     environment:

@@ -6,9 +6,10 @@ import (
 	"log"
 	"net/http"
 	"strconv"
-	"subalogue/app/validators"
-	"subalogue/db"
-	"subalogue/helpers"
+
+	"github.com/shiftingphotons/subalogue/app/validators"
+	"github.com/shiftingphotons/subalogue/db"
+	"github.com/shiftingphotons/subalogue/helpers"
 
 	"github.com/gorilla/mux"
 )

@@ -4,8 +4,9 @@ import (
 	"context"
 	"log"
 	"net/http"
-	"subalogue/db"
-	"subalogue/session"
+
+	"github.com/shiftingphotons/subalogue/db"
+	"github.com/shiftingphotons/subalogue/session"
 )
 
 func CreateUser(username string) {

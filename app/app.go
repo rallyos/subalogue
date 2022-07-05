@@ -6,8 +6,9 @@ import (
 	"os"
 
 	"database/sql"
-	"subalogue/app/middlewares"
-	"subalogue/db"
+
+	"github.com/shiftingphotons/subalogue/app/middlewares"
+	"github.com/shiftingphotons/subalogue/db"
 
 	"github.com/gorilla/mux"
 	"github.com/joho/godotenv"

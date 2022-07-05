@@ -5,8 +5,9 @@ import (
 	"encoding/json"
 	"log"
 	"net/http"
-	"subalogue/db"
-	"subalogue/helpers"
+
+	"github.com/shiftingphotons/subalogue/db"
+	"github.com/shiftingphotons/subalogue/helpers"
 )
 
 func List(w http.ResponseWriter, r *http.Request) {

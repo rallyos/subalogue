@@ -5,8 +5,9 @@ import (
 	"encoding/base64"
 	"net/http"
 	"os"
-	"subalogue/helpers"
-	"subalogue/session"
+
+	"github.com/shiftingphotons/subalogue/helpers"
+	"github.com/shiftingphotons/subalogue/session"
 )
 
 func Login(w http.ResponseWriter, r *http.Request) {

@@ -6,8 +6,9 @@ import (
 	"net/http"
 	"net/http/httptest"
 	"os"
-	"subalogue/session"
 	"testing"
+
+	"github.com/shiftingphotons/subalogue/session"
 
 	"github.com/golang-migrate/migrate/v4"
 	_ "github.com/golang-migrate/migrate/v4/database/postgres"

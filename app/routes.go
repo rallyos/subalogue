@@ -2,9 +2,10 @@ package app
 
 import (
 	"net/http"
-	"subalogue/app/handlers"
-	"subalogue/app/handlers/auth"
-	"subalogue/app/handlers/subscriptions"
+
+	"github.com/shiftingphotons/subalogue/app/handlers"
+	"github.com/shiftingphotons/subalogue/app/handlers/auth"
+	"github.com/shiftingphotons/subalogue/app/handlers/subscriptions"
 )
 
 func (s *Server) routes() {

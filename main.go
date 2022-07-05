@@ -1,7 +1,7 @@
 package main
 
 import (
-	"subalogue/app"
+	"github.com/shiftingphotons/subalogue/app"
 )
 
 func main() {

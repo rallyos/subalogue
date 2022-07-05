@@ -13,7 +13,7 @@ INSERT INTO subscriptions (
 RETURNING *;
 
 -- name: ListSubscriptions :many
-SELECT * FROM subscriptions where user_id = $1;
+SELECT * FROM subscriptions where user_id = $1 ORDER BY id;
 
 -- name: GetSubscription :one
 SELECT * FROM subscriptions where id = $1 AND user_id = $2;

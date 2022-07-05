@@ -4,8 +4,9 @@ import (
 	"context"
 	"net/http"
 	"strconv"
-	"subalogue/db"
-	"subalogue/helpers"
+
+	"github.com/shiftingphotons/subalogue/db"
+	"github.com/shiftingphotons/subalogue/helpers"
 
 	"github.com/gorilla/mux"
 )

@@ -1,7 +1,7 @@
 package validators
 
 import (
-	"subalogue/db"
+	"github.com/shiftingphotons/subalogue/db"
 )
 
 func ValidateSubscription(subscriptionParams db.Subscription) (bool, map[string]string) {

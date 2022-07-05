@@ -119,7 +119,7 @@ func (q *Queries) GetSubscription(ctx context.Context, arg GetSubscriptionParams
 }
 
 const listSubscriptions = `-- name: ListSubscriptions :many
-SELECT id, name, user_id, price, url, recurring, billing_date FROM subscriptions where user_id = $1
+SELECT id, name, user_id, price, url, recurring, billing_date FROM subscriptions where user_id = $1 ORDER BY id
 `
 
 func (q *Queries) ListSubscriptions(ctx context.Context, userID int32) ([]Subscription, error) {

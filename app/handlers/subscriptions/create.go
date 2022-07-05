@@ -5,9 +5,10 @@ import (
 	"encoding/json"
 	"log"
 	"net/http"
-	"subalogue/app/validators"
-	"subalogue/db"
-	"subalogue/helpers"
+
+	"github.com/shiftingphotons/subalogue/app/validators"
+	"github.com/shiftingphotons/subalogue/db"
+	"github.com/shiftingphotons/subalogue/helpers"
 )
 
 func Create(w http.ResponseWriter, r *http.Request) {

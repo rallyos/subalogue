@@ -5,8 +5,9 @@ import (
 	"log"
 	"net/http"
 	"os"
-	"subalogue/helpers"
-	"subalogue/session"
+
+	"github.com/shiftingphotons/subalogue/helpers"
+	"github.com/shiftingphotons/subalogue/session"
 
 	"github.com/coreos/go-oidc"
 )
